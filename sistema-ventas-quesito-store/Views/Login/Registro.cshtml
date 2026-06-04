@@ -1,0 +1,83 @@
+@model sistema_ventas_quesito_store.ViewModels.RegistroViewModel
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Quesito Store - Crear Cuenta</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="row justify-content-center mt-4 mb-4">
+        <div class="col-sm-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white text-center">
+                    <h5 class="mb-0">🧢 Quesito Store — Crear Cuenta</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Registro" method="post">
+                        <div class="mb-3">
+                            <label asp-for="NombreCompleto" class="form-label">Nombre completo</label>
+                            <input asp-for="NombreCompleto" class="form-control" />
+                            <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label asp-for="DNI" class="form-label">DNI</label>
+                                <input asp-for="DNI" class="form-control" />
+                                <span asp-validation-for="DNI" class="text-danger small"></span>
+                            </div>
+                            <div class="col mb-3">
+                                <label asp-for="Celular" class="form-label">Celular</label>
+                                <input asp-for="Celular" class="form-control" />
+                                <span asp-validation-for="Celular" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Direccion" class="form-label">Dirección</label>
+                            <input asp-for="Direccion" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Correo" class="form-label">Correo</label>
+                            <input asp-for="Correo" class="form-control" />
+                            <span asp-validation-for="Correo" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Contrasena" class="form-label">Contraseña</label>
+                            <input asp-for="Contrasena" class="form-control" />
+                            <span asp-validation-for="Contrasena" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ConfirmarContrasena" class="form-label">Confirmar contraseña</label>
+                            <input asp-for="ConfirmarContrasena" class="form-control" />
+                            <span asp-validation-for="ConfirmarContrasena" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="IdRol" class="form-label">Rol</label>
+                            <select asp-for="IdRol" class="form-select"
+                                    asp-items="@(new SelectList(Model.Roles, "IdRol", "NombreRol"))">
+                                <option value="">-- Selecciona un rol --</option>
+                            </select>
+                            <span asp-validation-for="IdRol" class="text-danger small"></span>
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark">Registrarse</button>
+                        </div>
+                    </form>
+                    <hr />
+                    <p class="text-center mb-0">
+                        ¿Ya tienes cuenta?
+                        <a asp-controller="Login" asp-action="Index">Iniciar Sesión</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
