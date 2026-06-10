@@ -27,8 +27,12 @@ namespace sistema_ventas_quesito_store.Models
         public string Contrasena { get; set; } = string.Empty;
 
         public int IdRol { get; set; }
-
         [ForeignKey("IdRol")]
         public Rol? Rol { get; set; }
+
+        // Navegación
+        public ICollection<Pedido>  Pedidos  { get; set; } = new List<Pedido>();
+        public ICollection<Entrega> Entregas { get; set; } = new List<Entrega>();
+        public Carrito? Carrito { get; set; }
     }
 }
