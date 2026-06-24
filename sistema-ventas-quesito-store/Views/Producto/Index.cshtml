@@ -1,0 +1,43 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><title>Productos</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
+<body class="bg-light">
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>🧢 Gestión de Productos</h4>
+    <div>
+      <a asp-action="Crear" class="btn btn-success btn-sm">+ Nuevo</a>
+      <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-outline-secondary btn-sm">← Panel</a>
+    </div>
+  </div>
+  <table class="table table-bordered bg-white shadow-sm">
+    <thead class="table-dark">
+      <tr><th>Nombre</th><th>Categoría</th><th>Talla</th><th>Color</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+    @foreach(var p in Model){
+      <tr class="@(p.Activo ? "" : "table-secondary text-muted")">
+        <td>@p.Nombre</td>
+        <td>@p.Categoria?.NombreCategoria</td>
+        <td>@p.Talla</td>
+        <td>@p.Color</td>
+        <td>S/ @p.Precio.ToString("0.00")</td>
+        <td>@p.Stock</td>
+        <td><span class="badge @(p.Activo ? "bg-success" : "bg-secondary")">@(p.Activo ? "Activo" : "Inactivo")</span></td>
+        <td>
+          <a asp-action="Editar" asp-route-id="@p.IdProducto" class="btn btn-warning btn-sm">Editar</a>
+          <form asp-action="Desactivar" asp-route-id="@p.IdProducto" method="post" style="display:inline">
+            <button class="btn btn-sm @(p.Activo ? "btn-outline-danger" : "btn-outline-success")">
+              @(p.Activo ? "Desactivar" : "Activar")
+            </button>
+          </form>
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
+</body></html>

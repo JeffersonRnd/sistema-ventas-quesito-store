@@ -12,11 +12,12 @@
         <div class="card-header bg-warning text-dark text-center">
             <h4>📦 Panel Empleado — Quesito Store</h4>
         </div>
-        <div class="card-body text-center">
-            <h5>¡Bienvenido/a, @nombre!</h5>
-            <p class="text-muted">Revisa y empaca los pedidos aprobados para que el repartidor los recoja.</p>
-            <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger mt-2">Cerrar Sesión</a>
-        </div>
+            <div class="card-body text-center">
+                <h5>¡Bienvenido/a, @nombre!</h5>
+                <a asp-controller="Empleado" asp-action="Index" class="btn btn-warning mt-3">📦 Ver Pedidos para Empacar</a>
+                <br />
+                <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger mt-2">Cerrar Sesión</a>
+            </div>
     </div>
 </div>
 </body>

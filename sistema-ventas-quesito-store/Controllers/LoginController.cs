@@ -38,7 +38,8 @@ namespace sistema_ventas_quesito_store.Controllers
                 return View(model);
             }
 
-            HttpContext.Session.SetString("UsuarioNombre", usuario.NombreCompleto);
+            //HttpContext.Session.SetString("UsuarioNombre", usuario.NombreCompleto);
+            HttpContext.Session.SetString("UsuarioId", usuario.IdUsuario.ToString());
             HttpContext.Session.SetString("UsuarioRol", usuario.Rol!.NombreRol);
 
             return usuario.Rol!.NombreRol switch

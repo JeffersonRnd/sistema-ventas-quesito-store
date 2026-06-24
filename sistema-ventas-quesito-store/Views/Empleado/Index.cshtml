@@ -1,0 +1,43 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Pedido>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><title>Panel Empleado</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
+<body class="bg-light">
+<div class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h4>📦 Módulo de Empaque</h4>
+    <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm">Salir</a>
+  </div>
+  @foreach(var p in Model){
+    <div class="card mb-2 shadow-sm">
+      <div class="card-header d-flex justify-content-between">
+        <b>Pedido #@p.IdPedido</b>
+        <span class="badge bg-info text-dark">@p.EstadoPedido</span>
+      </div>
+      <div class="card-body">
+        <p>Cliente: @p.Cliente?.NombreCompleto | Entrega: @p.TipoEntrega?.Nombre</p>
+        <ul class="small">
+          @foreach(var d in p.Detalles){
+            <li>@d.Producto?.Nombre — x@d.Cantidad</li>
+          }
+        </ul>
+        @if(p.EstadoPedido == "Aprobado"){
+          <form asp-action="MarcarEmpacando" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+            <button class="btn btn-warning btn-sm">📦 Iniciar Empaque</button>
+          </form>
+        }
+        @if(p.EstadoPedido == "Empacando"){
+          <form asp-action="MarcarListo" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+            <button class="btn btn-success btn-sm">✅ Empacado y Listo</button>
+          </form>
+        }
+      </div>
+    </div>
+  }
+  @if(!Model.Any()){
+    <div class="alert alert-success">No hay pedidos pendientes de empaque.</div>
+  }
+</div>
+</body></html>

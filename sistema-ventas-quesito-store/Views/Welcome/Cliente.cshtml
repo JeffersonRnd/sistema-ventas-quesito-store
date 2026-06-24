@@ -12,11 +12,14 @@
         <div class="card-header bg-success text-white text-center">
             <h4>🛍️ Portal Cliente — Quesito Store</h4>
         </div>
-        <div class="card-body text-center">
-            <h5>¡Bienvenido/a, @nombre!</h5>
-            <p class="text-muted">Explora nuestro catálogo de ropa urbana y consulta el estado de tus pedidos.</p>
-            <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger mt-2">Cerrar Sesión</a>
-        </div>
+            <div class="card-body text-center">
+                <h5>¡Bienvenido/a, @nombre!</h5>
+                <div class="d-flex gap-2 justify-content-center mt-3">
+                    <a asp-controller="Pedido" asp-action="Catalogo" class="btn btn-dark">🛍️ Ver Catálogo</a>
+                    <a asp-controller="Pedido" asp-action="MisPedidos" class="btn btn-outline-dark">📦 Mis Pedidos</a>
+                </div>
+                <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger mt-3">Cerrar Sesión</a>
+            </div>
     </div>
 </div>
 </body>

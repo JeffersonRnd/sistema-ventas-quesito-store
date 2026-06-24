@@ -1,0 +1,42 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><title>Catálogo</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
+<body class="bg-light">
+<div class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h4>🛍️ Catálogo Quesito Store</h4>
+    <div>
+      <a asp-action="Carrito" class="btn btn-warning btn-sm">🛒 Mi Carrito</a>
+      <a asp-action="MisPedidos" class="btn btn-outline-primary btn-sm">📦 Mis Pedidos</a>
+      <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm">Salir</a>
+    </div>
+  </div>
+  <div class="row row-cols-2 row-cols-md-4 g-3">
+  @foreach(var p in Model){
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        @if(!string.IsNullOrEmpty(p.ImagenUrl)){
+          <img src="@p.ImagenUrl" class="card-img-top" style="height:160px;object-fit:cover"/>
+        }
+        <div class="card-body p-2">
+          <p class="fw-bold mb-1">@p.Nombre</p>
+          <small class="text-muted">@p.Categoria?.NombreCategoria | @p.Talla | @p.Color</small>
+          <p class="text-success fw-bold mt-1">S/ @p.Precio.ToString("0.00")</p>
+          <p class="small">Stock: @p.Stock</p>
+          <form asp-action="AgregarCarrito" method="post">
+            <input type="hidden" name="idProducto" value="@p.IdProducto"/>
+            <div class="input-group input-group-sm">
+              <input type="number" name="cantidad" value="1" min="1" max="@p.Stock" class="form-control"/>
+              <button class="btn btn-dark">+Carrito</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+  </div>
+</div>
+</body></html>

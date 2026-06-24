@@ -1,0 +1,47 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Pedido>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><title>Pedidos</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
+<body class="bg-light">
+<div class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h4>📦 Todos los Pedidos</h4>
+    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-outline-secondary btn-sm">← Panel</a>
+  </div>
+  <table class="table table-bordered bg-white shadow-sm small">
+    <thead class="table-dark">
+      <tr><th>#</th><th>Cliente</th><th>Tipo Entrega</th><th>Total</th><th>Estado Pedido</th><th>Pago</th><th>Fecha</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+    @foreach(var p in Model){
+      <tr>
+        <td>@p.IdPedido</td>
+        <td>@p.Cliente?.NombreCompleto</td>
+        <td>@p.TipoEntrega?.Nombre</td>
+        <td>S/ @p.Total.ToString("0.00")</td>
+        <td><span class="badge bg-info text-dark">@p.EstadoPedido</span></td>
+        <td><span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></td>
+        <td>@p.FechaPedido.ToString("dd/MM/yy HH:mm")</td>
+        <td>
+          @if(p.EstadoPedido == "Pendiente"){
+            <form asp-action="Aprobar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+              <button class="btn btn-success btn-sm">✔ Aprobar</button>
+            </form>
+            <form asp-action="Cancelar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+              <button class="btn btn-danger btn-sm">✖ Cancelar</button>
+            </form>
+          }
+          @if(p.EstadoPago == "Pendiente"){
+            <form asp-action="MarcarPagado" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+              <button class="btn btn-outline-success btn-sm">💰 Pagado</button>
+            </form>
+          }
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
+</body></html>
