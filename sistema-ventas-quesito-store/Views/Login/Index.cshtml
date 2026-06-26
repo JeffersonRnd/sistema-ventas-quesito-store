@@ -1,53 +1,46 @@
-@model sistema_ventas_quesito_store.ViewModels.LoginViewModel
 @{ Layout = null; }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Quesito Store - Iniciar Sesión</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-</head>
-<body class="bg-light">
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-sm-5">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white text-center">
-                    <h5 class="mb-0">🧢 Quesito Store — Iniciar Sesión</h5>
-                </div>
-                <div class="card-body">
-                    @if (TempData["Mensaje"] != null)
-                    {
-                        <div class="alert alert-success">@TempData["Mensaje"]</div>
-                    }
-                    <form asp-action="Index" method="post">
-                        <div class="mb-3">
-                            <label asp-for="Correo" class="form-label">Correo</label>
-                            <input asp-for="Correo" class="form-control" placeholder="correo@ejemplo.com" />
-                            <span asp-validation-for="Correo" class="text-danger small"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Contrasena" class="form-label">Contraseña</label>
-                            <input asp-for="Contrasena" class="form-control" placeholder="••••••" />
-                            <span asp-validation-for="Contrasena" class="text-danger small"></span>
-                        </div>
-                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-dark">Ingresar</button>
-                        </div>
-                    </form>
-                    <hr />
-                    <p class="text-center mb-0">
-                        ¿No tienes cuenta?
-                        <a asp-controller="Login" asp-action="Registro">Regístrate</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ingresar — Quesito Store</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  *{font-family:"Segoe UI",sans-serif}
+  body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .login-card{background:#111;border:1px solid #2a2a2a;border-radius:12px;width:100%;max-width:400px;padding:2.5rem}
+  .form-control{background:#1a1a1a;border:1px solid #333;color:#fff}
+  .form-control:focus{background:#1a1a1a;border-color:#e63946;color:#fff;box-shadow:0 0 0 .2rem rgba(230,57,70,.15)}
+  .form-label{color:#aaa;font-size:.88rem}
+  .btn-ingresar{background:#e63946;color:#fff;border:none;padding:11px;font-weight:700;width:100%;border-radius:6px}
+  .btn-ingresar:hover{background:#c1121f;color:#fff}
+  .brand{font-size:1.5rem;font-weight:900;letter-spacing:2px;color:#fff}
+  .brand span{color:#e63946}
+</style>
+</head><body>
+<div class="login-card">
+  <div class="text-center mb-4">
+    <a href="/" class="text-decoration-none"><div class="brand">QUESITO<span>STORE</span></div></a>
+    <p class="text-muted small mt-1">Ingresa con tu cuenta</p>
+  </div>
+  @if(TempData["Mensaje"] != null){<div class="alert alert-success py-2 small">@TempData["Mensaje"]</div>}
+  @if(ViewData.ModelState.ErrorCount > 0){
+    <div class="alert alert-danger py-2 small">
+      @foreach(var e in ViewData.ModelState.Values.SelectMany(v=>v.Errors)){<div>@e.ErrorMessage</div>}
     </div>
+  }
+  <form method="post" action="/Login/Index">
+    <div class="mb-3">
+      <label class="form-label">Correo</label>
+      <input type="text" name="Correo" class="form-control" placeholder="correo@ejemplo.com" autocomplete="email"/>
+    </div>
+    <div class="mb-4">
+      <label class="form-label">Contraseña</label>
+      <input type="password" name="Contrasena" class="form-control" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button type="submit" class="btn-ingresar btn"><i class="bi bi-box-arrow-in-right me-2"></i>Ingresar</button>
+  </form>
+  <p class="text-center text-muted small mt-3 mb-0">
+    ¿No tienes cuenta? <a asp-controller="Login" asp-action="Registro" style="color:#e63946">Regístrate</a>
+  </p>
+  <p class="text-center mt-2"><a href="/" class="text-muted small"><i class="bi bi-arrow-left me-1"></i>Volver al inicio</a></p>
 </div>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-</body>
-</html>
+</body></html>

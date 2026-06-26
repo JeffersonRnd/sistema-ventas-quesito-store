@@ -1,47 +1,68 @@
 @model IEnumerable<sistema_ventas_quesito_store.Models.Pedido>
 @{ Layout = null; }
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"/><title>Pedidos</title>
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
-<body class="bg-light">
-<div class="container mt-4">
-  <div class="d-flex justify-content-between mb-3">
-    <h4>📦 Todos los Pedidos</h4>
-    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-outline-secondary btn-sm">← Panel</a>
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Pedidos Admin</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  *{font-family:"Segoe UI",sans-serif}body{background:#f4f5f7}
+  .qs-nav{background:#111;padding:.85rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #e63946}
+  .qs-brand{font-weight:900;letter-spacing:2px;font-size:1.2rem;color:#fff;text-decoration:none}.qs-brand span{color:#e63946}
+  .card{border:none;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+  th{font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;font-weight:700}td{font-size:.88rem;vertical-align:middle}
+</style>
+</head><body>
+<nav class="qs-nav">
+  <a class="qs-brand" href="#">QUESITO<span>STORE</span> <small class="fw-normal text-muted ms-2" style="font-size:.8rem;letter-spacing:0">Pedidos</small></a>
+  <div class="d-flex gap-2">
+    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-sm btn-outline-light"><i class="bi bi-arrow-left me-1"></i>Panel</a>
+    <a asp-controller="Login" asp-action="Salir" class="btn btn-sm btn-outline-danger">Salir</a>
   </div>
-  <table class="table table-bordered bg-white shadow-sm small">
-    <thead class="table-dark">
-      <tr><th>#</th><th>Cliente</th><th>Tipo Entrega</th><th>Total</th><th>Estado Pedido</th><th>Pago</th><th>Fecha</th><th>Acciones</th></tr>
-    </thead>
-    <tbody>
-    @foreach(var p in Model){
-      <tr>
-        <td>@p.IdPedido</td>
-        <td>@p.Cliente?.NombreCompleto</td>
-        <td>@p.TipoEntrega?.Nombre</td>
-        <td>S/ @p.Total.ToString("0.00")</td>
-        <td><span class="badge bg-info text-dark">@p.EstadoPedido</span></td>
-        <td><span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></td>
-        <td>@p.FechaPedido.ToString("dd/MM/yy HH:mm")</td>
-        <td>
-          @if(p.EstadoPedido == "Pendiente"){
-            <form asp-action="Aprobar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
-              <button class="btn btn-success btn-sm">✔ Aprobar</button>
-            </form>
-            <form asp-action="Cancelar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
-              <button class="btn btn-danger btn-sm">✖ Cancelar</button>
-            </form>
-          }
-          @if(p.EstadoPago == "Pendiente"){
-            <form asp-action="MarcarPagado" asp-route-id="@p.IdPedido" method="post" style="display:inline">
-              <button class="btn btn-outline-success btn-sm">💰 Pagado</button>
-            </form>
-          }
-        </td>
-      </tr>
-    }
-    </tbody>
-  </table>
+</nav>
+<div class="container-fluid px-4 mt-4">
+  <div class="d-flex align-items-center mb-3 gap-2">
+    <i class="bi bi-bag-check text-danger fs-4"></i>
+    <span class="fw-bold fs-5">Gestión de Pedidos</span>
+  </div>
+  <div class="card">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark"><tr>
+          <th class="ps-3">#</th><th>Cliente</th><th>Entrega</th><th>Total</th>
+          <th>Estado</th><th>Pago</th><th>Fecha</th><th class="pe-3">Acciones</th>
+        </tr></thead>
+        <tbody>
+        @foreach(var p in Model){
+          <tr>
+            <td class="ps-3 fw-bold">#@p.IdPedido</td>
+            <td>@p.Cliente?.NombreCompleto</td>
+            <td><span class="badge bg-light text-dark border">@p.TipoEntrega?.Nombre</span></td>
+            <td class="fw-semibold">S/ @p.Total.ToString("0.00")</td>
+            <td>
+              @{var sc = p.EstadoPedido switch{"Pendiente"=>"bg-warning text-dark","Aprobado"=>"bg-info text-dark","Empacando"=>"bg-primary","Empacado y listo"=>"bg-success","En despacho"=>"bg-primary","Finalizado"=>"bg-success","Cancelado"=>"bg-danger",_=>"bg-secondary"};}
+              <span class="badge @sc">@p.EstadoPedido</span>
+            </td>
+            <td><span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></td>
+            <td class="text-muted small">@p.FechaPedido.ToString("dd/MM/yy HH:mm")</td>
+            <td class="pe-3">
+              @if(p.EstadoPedido=="Pendiente"){
+                <form asp-action="Aprobar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+                  <button class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i></button>
+                </form>
+                <form asp-action="Cancelar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+                  <button class="btn btn-danger btn-sm"><i class="bi bi-x-lg"></i></button>
+                </form>
+              }
+              @if(p.EstadoPago=="Pendiente" && p.EstadoPedido!="Cancelado"){
+                <form asp-action="MarcarPagado" asp-route-id="@p.IdPedido" method="post" style="display:inline">
+                  <button class="btn btn-outline-success btn-sm" title="Marcar pagado"><i class="bi bi-currency-dollar"></i></button>
+                </form>
+              }
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 </body></html>

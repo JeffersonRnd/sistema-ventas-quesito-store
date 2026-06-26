@@ -2,7 +2,7 @@
 @{ Layout = null; }
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/><title>Mis Pedidos</title>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Mis Pedidos</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
 <body class="bg-light">
 <div class="container mt-4">
@@ -17,7 +17,7 @@
         <span class="badge bg-info text-dark">@p.EstadoPedido</span>
       </div>
       <div class="card-body">
-        <p>Entrega: <b>@p.TipoEntrega?.Nombre</b> | Pago: <span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></p>
+        <p>Entrega: <b>@p.TipoEntrega?.Nombre</b>@if(p.EstadoPedido != "Cancelado"){ <text> | Pago: <span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></text> }</p>
         <p>Total: <b>S/ @p.Total.ToString("0.00")</b></p>
         @if(p.Entrega?.EstadosEntrega?.Any() == true){
           <p class="mb-1"><b>Historial de entrega:</b></p>

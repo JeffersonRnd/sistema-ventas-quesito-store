@@ -2,13 +2,14 @@
 @{ Layout = null; }
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/><title>Catálogo</title>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Catálogo</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
 <body class="bg-light">
 <div class="container mt-4">
   <div class="d-flex justify-content-between mb-3">
     <h4>🛍️ Catálogo Quesito Store</h4>
     <div>
+      <a asp-controller="Welcome" asp-action="Cliente" class="btn btn-outline-secondary btn-sm">⬅ Panel</a>
       <a asp-action="Carrito" class="btn btn-warning btn-sm">🛒 Mi Carrito</a>
       <a asp-action="MisPedidos" class="btn btn-outline-primary btn-sm">📦 Mis Pedidos</a>
       <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm">Salir</a>

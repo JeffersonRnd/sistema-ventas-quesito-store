@@ -2,25 +2,41 @@
 @{ Layout = null; }
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/><title>Productos</title>
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
-<body class="bg-light">
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>🧢 Gestión de Productos</h4>
-    <div>
-      <a asp-action="Crear" class="btn btn-success btn-sm">+ Nuevo</a>
-      <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-outline-secondary btn-sm">← Panel</a>
-    </div>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Productos — Admin</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  body { background:#f5f5f5; font-family:'Segoe UI',sans-serif; }
+  .topbar { background:#111; color:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+  .topbar .brand { font-weight:900; letter-spacing:2px; } .topbar .brand span { color:#e63946; }
+  th { font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; }
+  .img-thumb { width:48px; height:48px; object-fit:cover; border-radius:4px; background:#ddd; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="brand">QUESITO<span>STORE</span> <small class="fw-normal ms-2 text-muted" style="font-size:.8rem">Productos</small></span>
+  <div class="d-flex gap-2">
+    <a asp-action="Crear" class="btn btn-sm" style="background:#e63946;color:#fff"><i class="bi bi-plus-lg me-1"></i>Nuevo Producto</a>
+    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-sm btn-outline-light"><i class="bi bi-arrow-left me-1"></i>Panel</a>
   </div>
-  <table class="table table-bordered bg-white shadow-sm">
+</div>
+<div class="container-fluid mt-4 px-4">
+  <table class="table table-bordered bg-white shadow-sm small">
     <thead class="table-dark">
-      <tr><th>Nombre</th><th>Categoría</th><th>Talla</th><th>Color</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+      <tr><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Talla</th><th>Color</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
     </thead>
     <tbody>
     @foreach(var p in Model){
-      <tr class="@(p.Activo ? "" : "table-secondary text-muted")">
-        <td>@p.Nombre</td>
+      <tr class="@(p.Activo ? "" : "opacity-50")">
+        <td>
+          @if(!string.IsNullOrEmpty(p.ImagenUrl)){
+            <img src="@p.ImagenUrl" class="img-thumb"/>
+          } else {
+            <div class="img-thumb d-flex align-items-center justify-content-center text-muted"><i class="bi bi-image"></i></div>
+          }
+        </td>
+        <td class="fw-semibold">@p.Nombre</td>
         <td>@p.Categoria?.NombreCategoria</td>
         <td>@p.Talla</td>
         <td>@p.Color</td>
@@ -28,11 +44,15 @@
         <td>@p.Stock</td>
         <td><span class="badge @(p.Activo ? "bg-success" : "bg-secondary")">@(p.Activo ? "Activo" : "Inactivo")</span></td>
         <td>
-          <a asp-action="Editar" asp-route-id="@p.IdProducto" class="btn btn-warning btn-sm">Editar</a>
+          <a asp-action="Editar" asp-route-id="@p.IdProducto" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
           <form asp-action="Desactivar" asp-route-id="@p.IdProducto" method="post" style="display:inline">
-            <button class="btn btn-sm @(p.Activo ? "btn-outline-danger" : "btn-outline-success")">
-              @(p.Activo ? "Desactivar" : "Activar")
+            <button class="btn btn-sm @(p.Activo ? "btn-outline-secondary" : "btn-outline-success")" title="@(p.Activo ? "Desactivar" : "Activar")">
+              <i class="bi @(p.Activo ? "bi-eye-slash" : "bi-eye")"></i>
             </button>
+          </form>
+          <form asp-action="Eliminar" asp-route-id="@p.IdProducto" method="post" style="display:inline"
+                onsubmit="return confirm('¿Eliminar este producto? Esta acción no se puede deshacer.')">
+            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
           </form>
         </td>
       </tr>
