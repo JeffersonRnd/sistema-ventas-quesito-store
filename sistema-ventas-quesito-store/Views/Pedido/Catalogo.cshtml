@@ -1,43 +1,110 @@
 @model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
-@{ Layout = null; }
+@{
+    Layout = null;
+}
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Catálogo</title>
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catálogo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
 <body class="bg-light">
-<div class="container mt-4">
-  <div class="d-flex justify-content-between mb-3">
-    <h4>🛍️ Catálogo Quesito Store</h4>
-    <div>
-      <a asp-controller="Welcome" asp-action="Cliente" class="btn btn-outline-secondary btn-sm">⬅ Panel</a>
-      <a asp-action="Carrito" class="btn btn-warning btn-sm">🛒 Mi Carrito</a>
-      <a asp-action="MisPedidos" class="btn btn-outline-primary btn-sm">📦 Mis Pedidos</a>
-      <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm">Salir</a>
-    </div>
-  </div>
-  <div class="row row-cols-2 row-cols-md-4 g-3">
-  @foreach(var p in Model){
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        @if(!string.IsNullOrEmpty(p.ImagenUrl)){
-          <img src="@p.ImagenUrl" class="card-img-top" style="height:160px;object-fit:cover"/>
-        }
-        <div class="card-body p-2">
-          <p class="fw-bold mb-1">@p.Nombre</p>
-          <small class="text-muted">@p.Categoria?.NombreCategoria | @p.Talla | @p.Color</small>
-          <p class="text-success fw-bold mt-1">S/ @p.Precio.ToString("0.00")</p>
-          <p class="small">Stock: @p.Stock</p>
-          <form asp-action="AgregarCarrito" method="post">
-            <input type="hidden" name="idProducto" value="@p.IdProducto"/>
-            <div class="input-group input-group-sm">
-              <input type="number" name="cantidad" value="1" min="1" max="@p.Stock" class="form-control"/>
-              <button class="btn btn-dark">+Carrito</button>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between mb-3">
+            <h4>🛍️ Catálogo Quesito Store</h4>
+            <div>
+                <a asp-controller="Welcome" asp-action="Cliente" class="btn btn-outline-secondary btn-sm">⬅ Panel</a>
+                <a asp-action="Carrito" class="btn btn-warning btn-sm">🛒 Mi Carrito</a>
+                <a asp-action="MisPedidos" class="btn btn-outline-primary btn-sm">📦 Mis Pedidos</a>
+                <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm">Salir</a>
             </div>
-          </form>
         </div>
-      </div>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+            @foreach (var p in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrEmpty(p.ImagenUrl))
+                        {
+                            <img src="@p.ImagenUrl" class="card-img-top" style="height:160px;object-fit:cover;cursor:zoom-in"
+                                 onclick="verImagen('@p.ImagenUrl','@p.Nombre')" title="Ver imagen completa" />
+                        }
+                        <div class="card-body p-2">
+                            <p class="fw-bold mb-1">@p.Nombre</p>
+                            
+                            <small class="text-muted">@p.Categoria?.NombreCategoria | Tallas: @(string.Join(", ", (p.Talla ?? "").Split(',').Select(t => t.Trim()).Where(t => t != "")))</small>
+                            <p class="small text-secondary mb-1">@p.Descripcion</p>
+                            <p class="text-success fw-bold mt-1">S/ @p.Precio.ToString("0.00")</p>
+                            <p class="small">Stock: @p.Stock</p>
+                            <form class="form-agregar" data-stock="@p.Stock">
+                                <input type="hidden" name="idProducto" value="@p.IdProducto" />
+                                <div class="input-group input-group-sm mb-1">
+                                    <input type="number" name="cantidad" value="1" min="1" max="@p.Stock" class="form-control" />
+                                    <button type="submit" class="btn btn-dark">Agregar al carrito</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-  }
-  </div>
-</div>
-</body></html>
+
+    <div class="modal fade" id="modalImagen" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="modalImagenTitulo"></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImagenSrc" src="" style="max-width:100%;max-height:70vh;" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+            function verImagen(url, nombre) {
+                document.getElementById('modalImagenSrc').src = url;
+                document.getElementById('modalImagenTitulo').innerText = nombre;
+                new bootstrap.Modal(document.getElementById('modalImagen')).show();
+            }
+
+            document.querySelectorAll('.form-agregar').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var stock = parseInt(form.dataset.stock);
+                    var cantidadInput = form.querySelector('input[name=cantidad]');
+                    var cantidad = parseInt(cantidadInput.value);
+                    if (!cantidad || cantidad < 1) {
+                        alert('La cantidad debe ser al menos 1.');
+                        return;
+                    }
+                    if (cantidad > stock) {
+                        alert('No puedes comprar más de ' + stock + ' unidad(es), es el stock disponible.');
+                        return;
+                    }
+                    var idProducto = form.querySelector('input[name=idProducto]').value;
+                    fetch('@Url.Action("AgregarCarrito")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'idProducto=' + idProducto + '&cantidad=' + cantidad
+                    })
+                        .then(r => r.json())
+                        .then(data => {
+                            alert(data.mensaje);
+                            if (data.ok && data.restante <= 0) {
+                                alert('Atención: se agotará el stock de este producto.');
+                            }
+                        })
+                        .catch(() => alert('Ocurrió un error al agregar el producto.'));
+                });
+            });
+    </script>
+</body>
+</html>

@@ -27,7 +27,10 @@ namespace sistema_ventas_quesito_store.Controllers
         [HttpPost]
         public async Task<IActionResult> AgregarCarrito(int idProducto, int cantidad)
         {
-            if (GetRol() != "Cliente") return RedirectToAction("Index", "Login");
+            if (GetRol() != "Cliente") return Json(new { ok = false, mensaje = "Sesión inválida." });
+            var producto = await _db.Productos.FindAsync(idProducto);
+            if (producto == null) return Json(new { ok = false, mensaje = "Producto no encontrado." });
+
             var idUsuario = GetUserId();
             var carrito = await _db.Carritos.FirstOrDefaultAsync(c => c.IdUsuario == idUsuario);
             if (carrito == null)
@@ -38,12 +41,72 @@ namespace sistema_ventas_quesito_store.Controllers
             }
             var detalle = await _db.CarritoDetalles
                 .FirstOrDefaultAsync(d => d.IdCarrito == carrito.IdCarrito && d.IdProducto == idProducto);
+            int cantidadActual = detalle?.Cantidad ?? 0;
+
+            if (cantidad < 1) return Json(new { ok = false, mensaje = "La cantidad debe ser al menos 1." });
+            if (cantidadActual + cantidad > producto.Stock)
+            {
+                int disponible = producto.Stock - cantidadActual;
+                return Json(new
+                {
+                    ok = false,
+                    mensaje = disponible <= 0
+                    ? "Ya tienes en el carrito todo el stock disponible de este producto."
+                    : $"Solo puedes agregar {disponible} unidad(es) más. Stock disponible: {producto.Stock}."
+                });
+            }
+
             if (detalle == null)
                 _db.CarritoDetalles.Add(new CarritoDetalle { IdCarrito = carrito.IdCarrito, IdProducto = idProducto, Cantidad = cantidad });
             else
                 detalle.Cantidad += cantidad;
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Catalogo));
+
+            int restante = producto.Stock - (cantidadActual + cantidad);
+            return Json(new { ok = true, mensaje = "Se agregó correctamente al carrito.", restante });
+        }
+
+        // ── CLIENTE: actualizar cantidad de un producto en el carrito ──
+        [HttpPost]
+        public async Task<IActionResult> ActualizarCantidadCarrito(int idDetalle, int cantidad)
+        {
+            if (GetRol() != "Cliente") return RedirectToAction("Index", "Login");
+            var idUsuario = GetUserId();
+            var detalle = await _db.CarritoDetalles.Include(d => d.Carrito).Include(d => d.Producto)
+                .FirstOrDefaultAsync(d => d.IdCarritoDetalle == idDetalle && d.Carrito!.IdUsuario == idUsuario);
+            if (detalle != null)
+            {
+                if (cantidad <= 0)
+                {
+                    _db.CarritoDetalles.Remove(detalle);
+                }
+                else if (cantidad > detalle.Producto!.Stock)
+                {
+                    TempData["ErrorPedido"] = $"Solo hay {detalle.Producto.Stock} unidad(es) en stock de {detalle.Producto.Nombre}.";
+                }
+                else
+                {
+                    detalle.Cantidad = cantidad;
+                }
+                await _db.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Carrito));
+        }
+
+        // ── CLIENTE: quitar un producto del carrito ──────────────
+        [HttpPost]
+        public async Task<IActionResult> EliminarDelCarrito(int idDetalle)
+        {
+            if (GetRol() != "Cliente") return RedirectToAction("Index", "Login");
+            var idUsuario = GetUserId();
+            var detalle = await _db.CarritoDetalles.Include(d => d.Carrito)
+                .FirstOrDefaultAsync(d => d.IdCarritoDetalle == idDetalle && d.Carrito!.IdUsuario == idUsuario);
+            if (detalle != null)
+            {
+                _db.CarritoDetalles.Remove(detalle);
+                await _db.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Carrito));
         }
 
         // ── CLIENTE: ver carrito ─────────────────────────────────
@@ -63,6 +126,16 @@ namespace sistema_ventas_quesito_store.Controllers
         public async Task<IActionResult> ConfirmarPedido(int idTipoEntrega, string? direccionDestino)
         {
             if (GetRol() != "Cliente") return RedirectToAction("Index", "Login");
+            if (idTipoEntrega <= 0)
+            {
+                TempData["ErrorPedido"] = "Por favor seleccione el tipo de entrega.";
+                return RedirectToAction(nameof(Carrito));
+            }
+            if (idTipoEntrega > 1 && string.IsNullOrWhiteSpace(direccionDestino))
+            {
+                TempData["ErrorPedido"] = "Por favor ingrese la dirección de entrega.";
+                return RedirectToAction(nameof(Carrito));
+            }
             var idUsuario = GetUserId();
             var carrito = await _db.Carritos
                 .Include(c => c.Detalles).ThenInclude(d => d.Producto)

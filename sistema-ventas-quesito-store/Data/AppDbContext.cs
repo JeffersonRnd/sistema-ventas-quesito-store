@@ -6,23 +6,22 @@ namespace sistema_ventas_quesito_store.Data
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-        // ── 10 Tablas ────────────────────────────────────────────
-        public DbSet<Rol>            Roles            { get; set; }   // 1
-        public DbSet<Usuario>        Usuarios         { get; set; }   // 2
-        public DbSet<Categoria>      Categorias       { get; set; }   // 3
-        public DbSet<Producto>       Productos        { get; set; }   // 4
-        public DbSet<TipoEntrega>    TiposEntrega     { get; set; }   // 5
-        public DbSet<Pedido>         Pedidos          { get; set; }   // 6
-        public DbSet<DetallePedido>  DetallesPedido   { get; set; }   // 7
-        public DbSet<Entrega>        Entregas         { get; set; }   // 8
-        public DbSet<EstadoEntrega>  EstadosEntrega   { get; set; }   // 9
-        public DbSet<Carrito>        Carritos         { get; set; }   // 10
-        public DbSet<CarritoDetalle> CarritoDetalles  { get; set; }   // 11 (tabla intermedia)
+        //****************tablas************************************
+        public DbSet<Rol>            Roles            { get; set; }
+        public DbSet<Usuario>        Usuarios         { get; set; }
+        public DbSet<Categoria>      Categorias       { get; set; }
+        public DbSet<Producto>       Productos        { get; set; }
+        public DbSet<TipoEntrega>    TiposEntrega     { get; set; }
+        public DbSet<Pedido>         Pedidos          { get; set; }
+        public DbSet<DetallePedido>  DetallesPedido   { get; set; }
+        public DbSet<Entrega>        Entregas         { get; set; }
+        public DbSet<EstadoEntrega>  EstadosEntrega   { get; set; }   
+        public DbSet<Carrito>        Carritos         { get; set; }
+        public DbSet<CarritoDetalle> CarritoDetalles  { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ── Relaciones ──────────────────────────────────────
+            //*************************Relaciones************************
 
             // Usuario → Rol
             modelBuilder.Entity<Usuario>()
@@ -99,7 +98,7 @@ namespace sistema_ventas_quesito_store.Data
                 .WithMany(p => p.CarritoDetalles)
                 .HasForeignKey(cd => cd.IdProducto);
 
-            // ── Seed Data ────────────────────────────────────────
+            //************Seed Data
 
             // Roles
             modelBuilder.Entity<Rol>().HasData(

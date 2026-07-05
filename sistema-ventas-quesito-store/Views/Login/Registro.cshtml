@@ -1,84 +1,79 @@
 @model sistema_ventas_quesito_store.ViewModels.RegistroViewModel
 @{ Layout = null; }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Quesito Store - Crear Cuenta</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-</head>
-<body class="bg-light">
-<div class="container">
-    <div class="row justify-content-center mt-4 mb-4">
-        <div class="col-sm-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white text-center">
-                    <h5 class="mb-0">🧢 Quesito Store — Crear Cuenta</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Registro" method="post">
-                        <div class="mb-3">
-                            <label asp-for="NombreCompleto" class="form-label">Nombre completo</label>
-                            <input asp-for="NombreCompleto" class="form-control" />
-                            <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
-                        </div>
-                        <div class="row">
-                            <div class="col mb-3">
-                                <label asp-for="DNI" class="form-label">DNI</label>
-                                <input asp-for="DNI" class="form-control" />
-                                <span asp-validation-for="DNI" class="text-danger small"></span>
-                            </div>
-                            <div class="col mb-3">
-                                <label asp-for="Celular" class="form-label">Celular</label>
-                                <input asp-for="Celular" class="form-control" />
-                                <span asp-validation-for="Celular" class="text-danger small"></span>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Direccion" class="form-label">Dirección</label>
-                            <input asp-for="Direccion" class="form-control" />
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Correo" class="form-label">Correo</label>
-                            <input asp-for="Correo" class="form-control" />
-                            <span asp-validation-for="Correo" class="text-danger small"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Contrasena" class="form-label">Contraseña</label>
-                            <input asp-for="Contrasena" class="form-control" />
-                            <span asp-validation-for="Contrasena" class="text-danger small"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="ConfirmarContrasena" class="form-label">Confirmar contraseña</label>
-                            <input asp-for="ConfirmarContrasena" class="form-control" />
-                            <span asp-validation-for="ConfirmarContrasena" class="text-danger small"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="IdRol" class="form-label">Rol</label>
-                            <select asp-for="IdRol" class="form-select"
-                                    asp-items="@(new SelectList(Model.Roles, "IdRol", "NombreRol"))">
-                                <option value="">-- Selecciona un rol --</option>
-                            </select>
-                            <span asp-validation-for="IdRol" class="text-danger small"></span>
-                        </div>
-                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-dark">Registrarse</button>
-                        </div>
-                    </form>
-                    <hr />
-                    <p class="text-center mb-0">
-                        ¿Ya tienes cuenta?
-                        <a asp-controller="Login" asp-action="Index">Iniciar Sesión</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Crear Cuenta — Quesito Store</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+  *{font-family:"Segoe UI",sans-serif}
+  body{background:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 0}
+  .login-card{background:#111;border:1px solid #2a2a2a;border-radius:12px;width:100%;max-width:460px;padding:2.5rem}
+  .form-control,.form-select{background:#1a1a1a;border:1px solid #333;color:#fff}
+  .form-control:focus,.form-select:focus{background:#1a1a1a;border-color:#e63946;color:#fff;box-shadow:0 0 0 .2rem rgba(230,57,70,.15)}
+  .form-label{color:#aaa;font-size:.88rem}
+  .btn-ingresar{background:#e63946;color:#fff;border:none;padding:11px;font-weight:700;width:100%;border-radius:6px}
+  .btn-ingresar:hover{background:#c1121f;color:#fff}
+  .brand{font-size:1.5rem;font-weight:900;letter-spacing:2px;color:#fff}
+  .brand span{color:#e63946}
+</style>
+</head><body>
+<div class="login-card">
+  <div class="text-center mb-4">
+    <a href="/" class="text-decoration-none"><div class="brand">QUESITO<span>STORE</span></div></a>
+    <p class="text-muted small mt-1">Crea tu cuenta</p>
+  </div>
+  <form asp-action="Registro" method="post">
+    <div class="mb-3">
+      <label asp-for="NombreCompleto" class="form-label">Nombre completo</label>
+      <input asp-for="NombreCompleto" class="form-control" />
+      <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
     </div>
+    <div class="row">
+      <div class="col mb-3">
+        <label asp-for="DNI" class="form-label">DNI</label>
+        <input asp-for="DNI" class="form-control" />
+        <span asp-validation-for="DNI" class="text-danger small"></span>
+      </div>
+      <div class="col mb-3">
+        <label asp-for="Celular" class="form-label">Celular</label>
+        <input asp-for="Celular" class="form-control" />
+        <span asp-validation-for="Celular" class="text-danger small"></span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label asp-for="Direccion" class="form-label">Dirección</label>
+      <input asp-for="Direccion" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label asp-for="Correo" class="form-label">Correo</label>
+      <input asp-for="Correo" class="form-control" />
+      <span asp-validation-for="Correo" class="text-danger small"></span>
+    </div>
+    <div class="mb-3">
+      <label asp-for="Contrasena" class="form-label">Contraseña</label>
+      <input asp-for="Contrasena" type="password" class="form-control" />
+      <span asp-validation-for="Contrasena" class="text-danger small"></span>
+    </div>
+    <div class="mb-3">
+      <label asp-for="ConfirmarContrasena" class="form-label">Confirmar contraseña</label>
+      <input asp-for="ConfirmarContrasena" type="password" class="form-control" />
+      <span asp-validation-for="ConfirmarContrasena" class="text-danger small"></span>
+    </div>
+    <div class="mb-4">
+      <label asp-for="IdRol" class="form-label">Rol</label>
+      <select asp-for="IdRol" class="form-select" asp-items="@(new SelectList(Model.Roles, "IdRol", "NombreRol"))">
+        <option value="">-- Selecciona un rol --</option>
+      </select>
+      <span asp-validation-for="IdRol" class="text-danger small"></span>
+    </div>
+    <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+    <button type="submit" class="btn-ingresar btn"><i class="bi bi-person-plus me-2"></i>Registrarse</button>
+  </form>
+  <p class="text-center text-muted small mt-3 mb-0">
+    ¿Ya tienes cuenta? <a asp-controller="Login" asp-action="Index" style="color:#e63946">Inicia sesión</a>
+  </p>
 </div>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-</body>
-</html>
+</body></html>

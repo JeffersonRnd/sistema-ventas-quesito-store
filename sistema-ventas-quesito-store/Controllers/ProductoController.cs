@@ -40,21 +40,21 @@ namespace sistema_ventas_quesito_store.Controllers
         [HttpPost]
         public async Task<IActionResult> Crear(Producto p, IFormFile? imagen)
         {
-            // Quitar ImagenUrl del ModelState para no bloquear
             ModelState.Remove("ImagenUrl");
             ModelState.Remove("Categoria");
             ModelState.Remove("DetallesPedido");
             ModelState.Remove("CarritoDetalles");
 
+            if (imagen == null || imagen.Length == 0)
+                ModelState.AddModelError("", "Debes subir una imagen de referencia del producto.");
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria");
+                ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria", p.IdCategoria);
                 return View(p);
             }
 
-            if (imagen != null && imagen.Length > 0)
-                p.ImagenUrl = await GuardarImagen(imagen);
-
+            p.ImagenUrl = await GuardarImagen(imagen!);
             _db.Productos.Add(p);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -79,7 +79,7 @@ namespace sistema_ventas_quesito_store.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria");
+                ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria", p.IdCategoria);
                 return View(p);
             }
 
@@ -109,7 +109,6 @@ namespace sistema_ventas_quesito_store.Controllers
             var p = await _db.Productos.FindAsync(id);
             if (p != null)
             {
-                // Eliminar imagen del disco si existe
                 if (!string.IsNullOrEmpty(p.ImagenUrl))
                 {
                     var ruta = Path.Combine(_env.WebRootPath, p.ImagenUrl.TrimStart('/'));

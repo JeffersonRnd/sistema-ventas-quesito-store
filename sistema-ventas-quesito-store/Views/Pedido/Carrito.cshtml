@@ -1,49 +1,95 @@
 @model sistema_ventas_quesito_store.Models.Carrito?
-@{ Layout = null; }
+@{
+    Layout = null;
+}
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Carrito</title>
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/></head>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carrito</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
 <body class="bg-light">
-<div class="container mt-4" style="max-width:700px">
-  <h4>🛒 Mi Carrito</h4>
-  @if(Model == null || !Model.Detalles.Any()){
-    <div class="alert alert-info">Tu carrito está vacío. <a asp-action="Catalogo">Ver catálogo</a></div>
-  } else {
-    <table class="table bg-white shadow-sm">
-      <thead><tr><th>Producto</th><th>Precio</th><th>Cant.</th><th>Subtotal</th></tr></thead>
-      <tbody>
-      @foreach(var d in Model.Detalles){
-        <tr>
-          <td>@d.Producto?.Nombre</td>
-          <td>S/ @d.Producto?.Precio.ToString("0.00")</td>
-          <td>@d.Cantidad</td>
-          <td>S/ @((d.Producto!.Precio * d.Cantidad).ToString("0.00"))</td>
-        </tr>
-      }
-      </tbody>
-      <tfoot><tr><td colspan="3" class="fw-bold text-end">Total:</td>
-        <td class="fw-bold">S/ @Model.Detalles.Sum(d=>d.Producto!.Precio*d.Cantidad).ToString("0.00")</td></tr></tfoot>
-    </table>
-    <form asp-action="ConfirmarPedido" method="post">
-      <div class="mb-2">
-        <label>Tipo de entrega</label>
-        <select name="idTipoEntrega" asp-items="ViewBag.TiposEntrega" class="form-select" id="tipoEntrega" onchange="toggleDireccion(this)">
-          <option value="">-- Seleccionar --</option>
-        </select>
-      </div>
-      <div class="mb-2" id="divDireccion" style="display:none">
-        <label>Dirección de entrega</label>
-        <input type="text" name="direccionDestino" class="form-control" placeholder="Dirección completa"/>
-      </div>
-      <button class="btn btn-success">✔ Confirmar Pedido</button>
-      <a asp-action="Catalogo" class="btn btn-secondary">← Seguir comprando</a>
-    </form>
-    <script>
-      function toggleDireccion(sel){
-        document.getElementById('divDireccion').style.display = sel.value > 1 ? 'block' : 'none';
-      }
-    </script>
-  }
-</div>
-</body></html>
+    <div class="container mt-4" style="max-width:700px">
+        <h4>🛒 Mi Carrito</h4>
+        @if (TempData["ErrorPedido"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorPedido"]</div>
+        }
+        @if (Model == null || !Model.Detalles.Any())
+        {
+            <div class="alert alert-info">Tu carrito está vacío. <a asp-action="Catalogo">Ver catálogo</a></div>
+        }
+        else
+        {
+            <table class="table bg-white shadow-sm">
+                <thead><tr><th>Producto</th><th>Precio</th><th>Cant.</th><th>Subtotal</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var d in Model.Detalles)
+                    {
+                        <tr>
+                            <td>@d.Producto?.Nombre</td>
+                            <td>S/ @d.Producto?.Precio.ToString("0.00")</td>
+                            <td>
+                                <form asp-action="ActualizarCantidadCarrito" method="post" class="d-flex gap-1">
+                                    <input type="hidden" name="idDetalle" value="@d.IdCarritoDetalle" />
+                                    <input type="number" name="cantidad" value="@d.Cantidad" min="1" max="@d.Producto!.Stock" class="form-control form-control-sm" style="width:70px" />
+                                    <button class="btn btn-outline-primary btn-sm" title="Aceptar cambio de cantidad">✔</button>
+                                </form>
+                            </td>
+                            <td>S/ @((d.Producto!.Precio * d.Cantidad).ToString("0.00"))</td>
+                            <td>
+                                <form asp-action="EliminarDelCarrito" method="post" onsubmit="return confirm('¿Eliminar este producto del carrito?');">
+                                    <input type="hidden" name="idDetalle" value="@d.IdCarritoDetalle" />
+                                    <button class="btn btn-outline-danger btn-sm">✕ Quitar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="fw-bold text-end">Total:</td>
+                        <td class="fw-bold" colspan="2">S/ @Model.Detalles.Sum(d => d.Producto!.Precio * d.Cantidad).ToString("0.00")</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <form asp-action="ConfirmarPedido" method="post" id="formPedido" onsubmit="return validarPedido();">
+                <div class="mb-2">
+                    <label>Tipo de entrega</label>
+                    <select name="idTipoEntrega" asp-items="ViewBag.TiposEntrega" class="form-select" id="tipoEntrega" onchange="toggleDireccion(this)">
+                        <option value="">-- Seleccionar --</option>
+                    </select>
+                </div>
+                <div class="mb-2" id="divDireccion" style="display:none">
+                    <label>Dirección de entrega</label>
+                    <input type="text" name="direccionDestino" id="direccionDestino" class="form-control" placeholder="Dirección completa" />
+                </div>
+                <button class="btn btn-success">✔ Confirmar Pedido</button>
+                <a asp-action="Catalogo" class="btn btn-secondary">← Seguir comprando</a>
+            </form>
+            <script>
+                        function toggleDireccion(sel) {
+                            document.getElementById('divDireccion').style.display = sel.value > 1 ? 'block' : 'none';
+                        }
+                        function validarPedido() {
+                            var tipo = document.getElementById('tipoEntrega').value;
+                            if (!tipo) {
+                                alert('Por favor seleccione el tipo de entrega.');
+                                return false;
+                            }
+                            if (tipo > 1) {
+                                var dir = document.getElementById('direccionDestino').value.trim();
+                                if (!dir) {
+                                    alert('Por favor ingrese la dirección de entrega.');
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+            </script>
+        }
+    </div>
+</body>
+</html>
