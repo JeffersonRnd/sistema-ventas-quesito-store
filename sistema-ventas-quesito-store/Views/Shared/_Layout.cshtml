@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Quesito Store</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/sistema-ventas-quesito-store.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="qs-body">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark border-bottom mb-3" style="background:var(--qs-dark)">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">🧢 Quesito Store</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index"><i class="bi bi-bag-heart-fill me-2" style="color:var(--qs-yellow)"></i>Quesito Store</a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -28,9 +30,9 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top footer text-muted mt-4">
+    <footer class="qs-footer mt-4">
         <div class="container">
-            &copy; 2026 - Quesito Store, Cajamarca
+            &copy; 2026 - <strong>Quesito Store</strong>, Cajamarca
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

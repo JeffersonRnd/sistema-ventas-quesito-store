@@ -25,11 +25,28 @@ namespace sistema_ventas_quesito_store.Controllers
 
         // ── CLIENTE: agregar al carrito ──────────────────────────
         [HttpPost]
-        public async Task<IActionResult> AgregarCarrito(int idProducto, int cantidad)
+        public async Task<IActionResult> AgregarCarrito(int idProducto, int cantidad, string? talla)
         {
             if (GetRol() != "Cliente") return Json(new { ok = false, mensaje = "Sesión inválida." });
             var producto = await _db.Productos.FindAsync(idProducto);
             if (producto == null) return Json(new { ok = false, mensaje = "Producto no encontrado." });
+
+            // Si el producto maneja tallas, la talla es obligatoria y su stock propio manda
+            var tallas = TallaHelper.Parse(producto.Talla);
+            int stockDisponible = producto.Stock;
+            talla = string.IsNullOrWhiteSpace(talla) ? null : talla.Trim();
+
+            if (tallas.Count > 0)
+            {
+                if (talla == null)
+                    return Json(new { ok = false, mensaje = "Selecciona una talla antes de agregar al carrito." });
+
+                var tallaInfo = tallas.FirstOrDefault(t => t.Nombre == talla);
+                if (tallaInfo.Nombre == null)
+                    return Json(new { ok = false, mensaje = "La talla seleccionada no está disponible para este producto." });
+
+                stockDisponible = tallaInfo.Stock;
+            }
 
             var idUsuario = GetUserId();
             var carrito = await _db.Carritos.FirstOrDefaultAsync(c => c.IdUsuario == idUsuario);
@@ -40,29 +57,29 @@ namespace sistema_ventas_quesito_store.Controllers
                 await _db.SaveChangesAsync();
             }
             var detalle = await _db.CarritoDetalles
-                .FirstOrDefaultAsync(d => d.IdCarrito == carrito.IdCarrito && d.IdProducto == idProducto);
+                .FirstOrDefaultAsync(d => d.IdCarrito == carrito.IdCarrito && d.IdProducto == idProducto && d.TallaSeleccionada == talla);
             int cantidadActual = detalle?.Cantidad ?? 0;
 
             if (cantidad < 1) return Json(new { ok = false, mensaje = "La cantidad debe ser al menos 1." });
-            if (cantidadActual + cantidad > producto.Stock)
+            if (cantidadActual + cantidad > stockDisponible)
             {
-                int disponible = producto.Stock - cantidadActual;
+                int disponible = stockDisponible - cantidadActual;
                 return Json(new
                 {
                     ok = false,
                     mensaje = disponible <= 0
-                    ? "Ya tienes en el carrito todo el stock disponible de este producto."
-                    : $"Solo puedes agregar {disponible} unidad(es) más. Stock disponible: {producto.Stock}."
+                    ? "Ya tienes en el carrito todo el stock disponible de este producto/talla."
+                    : $"Solo puedes agregar {disponible} unidad(es) más. Stock disponible: {stockDisponible}."
                 });
             }
 
             if (detalle == null)
-                _db.CarritoDetalles.Add(new CarritoDetalle { IdCarrito = carrito.IdCarrito, IdProducto = idProducto, Cantidad = cantidad });
+                _db.CarritoDetalles.Add(new CarritoDetalle { IdCarrito = carrito.IdCarrito, IdProducto = idProducto, Cantidad = cantidad, TallaSeleccionada = talla });
             else
                 detalle.Cantidad += cantidad;
             await _db.SaveChangesAsync();
 
-            int restante = producto.Stock - (cantidadActual + cantidad);
+            int restante = stockDisponible - (cantidadActual + cantidad);
             return Json(new { ok = true, mensaje = "Se agregó correctamente al carrito.", restante });
         }
 
@@ -76,13 +93,21 @@ namespace sistema_ventas_quesito_store.Controllers
                 .FirstOrDefaultAsync(d => d.IdCarritoDetalle == idDetalle && d.Carrito!.IdUsuario == idUsuario);
             if (detalle != null)
             {
+                int stockDisponible = detalle.Producto!.Stock;
+                if (!string.IsNullOrEmpty(detalle.TallaSeleccionada))
+                {
+                    var tallaInfo = TallaHelper.Parse(detalle.Producto.Talla).FirstOrDefault(t => t.Nombre == detalle.TallaSeleccionada);
+                    stockDisponible = tallaInfo.Nombre != null ? tallaInfo.Stock : 0;
+                }
+
                 if (cantidad <= 0)
                 {
                     _db.CarritoDetalles.Remove(detalle);
                 }
-                else if (cantidad > detalle.Producto!.Stock)
+                else if (cantidad > stockDisponible)
                 {
-                    TempData["ErrorPedido"] = $"Solo hay {detalle.Producto.Stock} unidad(es) en stock de {detalle.Producto.Nombre}.";
+                    TempData["ErrorPedido"] = $"Solo hay {stockDisponible} unidad(es) en stock de {detalle.Producto.Nombre}" +
+                        (detalle.TallaSeleccionada != null ? $" (talla {detalle.TallaSeleccionada})." : ".");
                 }
                 else
                 {
@@ -158,9 +183,25 @@ namespace sistema_ventas_quesito_store.Controllers
                     IdPedido = pedido.IdPedido,
                     IdProducto = d.IdProducto,
                     Cantidad = d.Cantidad,
+                    TallaSeleccionada = d.TallaSeleccionada,
                     PrecioUnitario = d.Producto!.Precio
                 });
                 d.Producto.Stock -= d.Cantidad;
+
+                // Descuenta también el stock de la talla específica
+                if (!string.IsNullOrEmpty(d.TallaSeleccionada))
+                {
+                    var tallas = TallaHelper.Parse(d.Producto.Talla);
+                    for (int i = 0; i < tallas.Count; i++)
+                    {
+                        if (tallas[i].Nombre == d.TallaSeleccionada)
+                        {
+                            tallas[i] = (tallas[i].Nombre, Math.Max(0, tallas[i].Stock - d.Cantidad));
+                            break;
+                        }
+                    }
+                    d.Producto.Talla = TallaHelper.Serializar(tallas);
+                }
             }
 
             // Crear registro de entrega

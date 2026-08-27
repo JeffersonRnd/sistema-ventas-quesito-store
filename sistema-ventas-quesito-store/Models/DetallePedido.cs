@@ -10,6 +10,9 @@ namespace sistema_ventas_quesito_store.Models
 
         public int Cantidad { get; set; }
 
+        [StringLength(30)]
+        public string? TallaSeleccionada { get; set; }
+
         [Column(TypeName = "decimal(10,2)")]
         public decimal PrecioUnitario { get; set; }
 

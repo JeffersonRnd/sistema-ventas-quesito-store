@@ -11,6 +11,10 @@ namespace sistema_ventas_quesito_store.Models
         [Required]
         public int Cantidad { get; set; }
 
+        // Talla elegida por el cliente (si el producto maneja tallas)
+        [StringLength(30)]
+        public string? TallaSeleccionada { get; set; }
+
         // FK Carrito
         public int IdCarrito { get; set; }
         [ForeignKey("IdCarrito")]

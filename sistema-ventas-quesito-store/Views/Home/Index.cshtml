@@ -1,7 +1,5 @@
-@{
-    ViewData["Title"] = "Inicio";
-    Layout = null;
-}
+@model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
+@{ ViewData["Title"] = "Inicio"; Layout = null; }
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,158 +8,123 @@
     <title>Quesito Store — Ropa Urbana en Cajamarca</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
-    <style>
-            body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; }
-            .hero { min-height: 100vh; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%); display: flex; flex-direction: column; }
-            .navbar-brand { font-weight: 800; letter-spacing: 2px; font-size: 1.4rem; }
-            .hero-title { font-size: 3.5rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1; }
-            .hero-title span { color: #e63946; }
-            .hero-sub { font-size: 1.1rem; color: #aaa; max-width: 480px; }
-            .btn-hero { background: #e63946; color: #fff; border: none; padding: 14px 36px; font-size: 1rem; font-weight: 700; letter-spacing: 1px; border-radius: 4px; transition: background .2s; }
-            .btn-hero:hover { background: #c1121f; color: #fff; }
-            .btn-hero-outline { border: 2px solid #fff; color: #fff; padding: 12px 32px; font-size: 1rem; font-weight: 600; border-radius: 4px; background: transparent; transition: all .2s; }
-            .btn-hero-outline:hover { background: #fff; color: #000; }
-            .features { background: #111; border-top: 1px solid #222; }
-            .feature-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 2rem; text-align: center; transition: border-color .2s; }
-            .feature-card:hover { border-color: #e63946; }
-            .feature-icon { font-size: 2rem; color: #e63946; margin-bottom: 1rem; }
-            .categories { background: #0d0d0d; }
-            .cat-badge { background: #1a1a1a; border: 1px solid #333; padding: .6rem 1.4rem; border-radius: 2rem; font-size: .9rem; color: #ccc; transition: all .2s; cursor: default; }
-            .cat-badge:hover { background: #e63946; border-color: #e63946; color: #fff; }
-            footer { background: #050505; border-top: 1px solid #1a1a1a; color: #555; font-size: .85rem; }
-
-            /* Modal login */
-            .modal-content { background: #111; border: 1px solid #2a2a2a; color: #fff; }
-            .modal-header { border-bottom: 1px solid #2a2a2a; }
-            .modal-footer { border-top: 1px solid #2a2a2a; }
-            .form-control { background: #1a1a1a; border: 1px solid #333; color: #fff; }
-            .form-control:focus { background: #1a1a1a; border-color: #e63946; color: #fff; box-shadow: 0 0 0 .2rem rgba(230,57,70,.15); }
-            .form-label { color: #aaa; font-size: .9rem; }
-            .btn-login { background: #e63946; color: #fff; border: none; padding: 10px; font-weight: 700; width: 100%; border-radius: 4px; }
-            .btn-login:hover { background: #c1121f; color: #fff; }
-    </style>
+    <link rel="stylesheet" href="~/css/store.css" />
 </head>
-<body>
-
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-dark px-4 py-3" style="background:#050505; border-bottom:1px solid #1a1a1a;">
-        <a class="navbar-brand" href="#">QUESITO<span style="color:#e63946">STORE</span></a>
-        <div class="d-flex gap-3 align-items-center">
-            <span class="text-muted small d-none d-md-block">Cajamarca, Perú</span>
-            <button class="btn-hero-outline btn" data-bs-toggle="modal" data-bs-target="#modalLogin">
-                <i class="bi bi-person me-2"></i>Iniciar Sesión
-            </button>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <section class="hero flex-grow-1 d-flex align-items-center">
-        <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <p class="text-uppercase mb-2" style="color:#e63946; font-size:.85rem; font-weight:700; letter-spacing:3px;">Ropa Urbana — Cajamarca</p>
-                    <h1 class="hero-title mb-4">Tu estilo,<br /><span>tu identidad.</span></h1>
-                    <p class="hero-sub mb-5">Gorras, zapatillas, polos, poleras y pantalones para construir el outfit perfecto. Calidad urbana al alcance de todos.</p>
-                    <div class="d-flex gap-3 flex-wrap">
-                        <button class="btn-hero btn" data-bs-toggle="modal" data-bs-target="#modalLogin">
-                            <i class="bi bi-bag me-2"></i>Comprar Ahora
-                        </button>
-                        <a asp-controller="Login" asp-action="Registro" class="btn-hero-outline btn">
-                            Crear Cuenta
-                        </a>
-                    </div>
-                </div>
-
-
-                <div class="col-lg-5 d-none d-lg-flex justify-content-center align-items-center">
-
-                    <div style="
-                        width:360px;
-                        height:360px;
-                        border-radius:50%;
-                        border:2px solid rgba(230,57,70,.30);
-                        display:flex;
-                        justify-content:center;
-                        align-items:center;
-                        background:rgba(255,255,255,.03);">
-
-                        <img src="~/images/Logo.png"
-                             alt="Logo Quesito Store"
-                             style="
-                                width:320px;
-                                height:320px;
-                                border-radius:50%;
-                                object-fit:cover;
-                                background:#fff;
-                                padding:10px;
-                                border:5px solid #e63946;
-                                box-shadow:0 0 25px rgba(230,57,70,.45);">
-
-                    </div>
-
-                </div>
-
-                
-                
+<body class="qs-body">
+    <header class="qs-header">
+        <div class="qs-topbar">
+            <a class="qs-brand" href="#"><i class="bi bi-bag-heart-fill" style="color:#4d381d"></i>QUESITO<span>STORE</span></a>
+            <div class="qs-nav-links">
+                <span class="small d-none d-md-block text-dark"><i class="bi bi-geo-alt me-1"></i>Cajamarca, Perú</span>
+                <button class="btn btn-qs-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalLogin">
+                    <i class="bi bi-person me-1"></i>Ingresar
+                </button>
+                <a asp-controller="Login" asp-action="Registro" class="btn btn-qs-primary btn-sm">
+                    <i class="bi bi-person-plus me-1"></i>Crear cuenta
+                </a>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- CATEGORÍAS -->
-    <section class="categories py-5">
-        <div class="container text-center">
-            <p class="text-uppercase mb-4" style="color:#e63946; font-size:.8rem; font-weight:700; letter-spacing:3px;">Lo que encontrarás</p>
-            <div class="d-flex flex-wrap gap-3 justify-content-center">
-                <span class="cat-badge"><i class="bi bi-star me-2"></i>Gorras</span>
-                <span class="cat-badge"><i class="bi bi-star me-2"></i>Zapatillas</span>
-                <span class="cat-badge"><i class="bi bi-star me-2"></i>Polos</span>
-                <span class="cat-badge"><i class="bi bi-star me-2"></i>Poleras</span>
-                <span class="cat-badge"><i class="bi bi-star me-2"></i>Pantalones</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features py-5">
+    <section class="qs-hero">
         <div class="container">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="bi bi-truck"></i></div>
-                        <h6 class="fw-bold mb-2">Envío a Todo el Perú</h6>
-                        <p class="text-muted small mb-0">Envíos a domicilio en Cajamarca y a nivel nacional mediante empresas de transporte.</p>
+            <h1><i class="bi bi-stars me-1"></i>Ropa y calzado urbano en Cajamarca</h1>
+            <p>Mira todo el catálogo libremente. Para comprar, crea tu cuenta gratis en un minuto.</p>
+        </div>
+    </section>
+
+    <div class="container mb-5">
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="badge rounded-pill text-dark border px-3 py-2"><i class="bi bi-tag me-1"></i>Gorras</span>
+            <span class="badge rounded-pill text-dark border px-3 py-2"><i class="bi bi-tag me-1"></i>Zapatillas</span>
+            <span class="badge rounded-pill text-dark border px-3 py-2"><i class="bi bi-tag me-1"></i>Polos</span>
+            <span class="badge rounded-pill text-dark border px-3 py-2"><i class="bi bi-tag me-1"></i>Poleras</span>
+            <span class="badge rounded-pill text-dark border px-3 py-2"><i class="bi bi-tag me-1"></i>Pantalones</span>
+        </div>
+
+        <h2 class="qs-section-title"><i class="bi bi-grid-fill"></i>Productos destacados</h2>
+        <div class="qs-grid">
+            @foreach (var p in Model)
+            {
+                <div class="qs-card">
+                    <div class="qs-card-img position-relative" @(!string.IsNullOrEmpty(p.ImagenUrl) ? $"onclick=\"verImagen('{p.ImagenUrl}','{p.Nombre}')\"" : "")>
+                        <span class="qs-ribbon">DISPONIBLE</span>
+                        @if (!string.IsNullOrEmpty(p.ImagenUrl))
+                        {
+                            <img src="@p.ImagenUrl" alt="@p.Nombre" />
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted"><i class="bi bi-image fs-2"></i></div>
+                        }
+                    </div>
+                    <div class="qs-card-body">
+                        <span class="qs-cat-tag">@p.Categoria?.NombreCategoria</span>
+                        <div class="qs-card-title">@p.Nombre</div>
+                        <div class="qs-price">S/ @p.Precio.ToString("0.00")</div>
+                        <div class="qs-stock-note"><i class="bi bi-box-seam me-1"></i>@p.Stock disponibles</div>
+                        <div class="qs-card-footer">
+                            <button type="button" class="btn btn-qs-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalLogin">
+                                <i class="bi bi-cart-plus me-1"></i>Comprar
+                            </button>
+                        </div>
                     </div>
                 </div>
+            }
+        </div>
+        @if (!Model.Any())
+        {
+            <div class="alert alert-secondary mt-3"><i class="bi bi-info-circle me-1"></i>No hay productos disponibles por el momento.</div>
+        }
+    </div>
+
+    <section class="py-5" style="background:#fff;border-top:1px solid #eee">
+        <div class="container">
+            <div class="row g-4 text-center">
                 <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
-                        <h6 class="fw-bold mb-2">Seguimiento en Tiempo Real</h6>
-                        <p class="text-muted small mb-0">Consulta el estado de tu pedido desde el empaque hasta la entrega final.</p>
-                    </div>
+                    <i class="bi bi-truck fs-2" style="color:#4d381d"></i>
+                    <h6 class="fw-bold mt-2 mb-1">Envío a todo el Perú</h6>
+                    <p class="text-muted small mb-0">Recojo en tienda o envío a domicilio en Cajamarca y otras ciudades.</p>
                 </div>
                 <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
-                        <h6 class="fw-bold mb-2">Compra Segura</h6>
-                        <p class="text-muted small mb-0">Registro de pagos y confirmación de pedidos gestionada por nuestro equipo.</p>
-                    </div>
+                    <i class="bi bi-clock-history fs-2" style="color:#4d381d"></i>
+                    <h6 class="fw-bold mt-2 mb-1">Seguimiento de tu pedido</h6>
+                    <p class="text-muted small mb-0">Consulta el estado de tu compra desde tu cuenta.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-shield-check fs-2" style="color:#4d381d"></i>
+                    <h6 class="fw-bold mt-2 mb-1">Compra segura</h6>
+                    <p class="text-muted small mb-0">Pedidos verificados y confirmados por nuestro equipo.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="text-center py-4">
-        <p class="mb-0">© 2025 <strong style="color:#e63946">Quesito Store</strong> — Cajamarca, Perú. Todos los derechos reservados.</p>
+    <footer class="qs-footer">
+        <strong>Quesito Store</strong> · Cajamarca, Perú · © 2026 Todos los derechos reservados
     </footer>
 
-    <!-- MODAL LOGIN -->
+    <div class="modal fade" id="modalImagen" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="modalImagenTitulo"></h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImagenSrc" src="" style="max-width:100%;max-height:70vh;" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN (requerido para comprar) -->
     <div class="modal fade" id="modalLogin" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-person-circle me-2" style="color:#e63946"></i>Iniciar Sesión</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title fw-bold"><i class="bi bi-person-circle me-2" style="color:#4d381d"></i>Inicia sesión para comprar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form asp-controller="Login" asp-action="Index" method="post">
                     <div class="modal-body">
@@ -179,11 +142,11 @@
                         }
                     </div>
                     <div class="modal-footer flex-column gap-2">
-                        <button type="submit" class="btn-login btn">
+                        <button type="submit" class="btn btn-qs-primary w-100 py-2">
                             <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
                         </button>
                         <a asp-controller="Login" asp-action="Registro" class="text-muted small">
-                            ¿No tienes cuenta? <span style="color:#e63946">Regístrate aquí</span>
+                            ¿No tienes cuenta? <span style="color:#4d381d">Regístrate gratis</span>
                         </a>
                     </div>
                 </form>
@@ -192,5 +155,12 @@
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function verImagen(url, nombre) {
+            document.getElementById('modalImagenSrc').src = url;
+            document.getElementById('modalImagenTitulo').innerText = nombre;
+            new bootstrap.Modal(document.getElementById('modalImagen')).show();
+        }
+    </script>
 </body>
 </html>

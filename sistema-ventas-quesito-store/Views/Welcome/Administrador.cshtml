@@ -2,20 +2,13 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Admin — Quesito Store</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
-<style>
-  *{font-family:"Segoe UI",sans-serif}body{background:#f4f5f7}
-  .qs-nav{background:#111;padding:.85rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #e63946}
-  .qs-brand{font-weight:900;letter-spacing:2px;font-size:1.2rem;color:#fff;text-decoration:none}.qs-brand span{color:#e63946}
-  .menu-card{border:none;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s;text-decoration:none;color:#1a1a1a;display:block}
-  .menu-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.13);color:#1a1a1a}
-  .menu-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:1rem}
-</style>
-</head><body>
+<link rel="stylesheet" href="~/css/store.css"/>
+</head><body class="qs-body-alt">
 <nav class="qs-nav">
-  <a class="qs-brand" href="#">QUESITO<span>STORE</span></a>
+  <a class="qs-brand" href="#">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Panel Administrador</small></a>
   <div class="d-flex align-items-center gap-3">
-    <span class="text-muted small d-none d-md-block"><i class="bi bi-person-circle me-1"></i>@nombre</span>
-    <a asp-controller="Login" asp-action="Salir" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-right me-1"></i>Salir</a>
+    <span class="small d-none d-md-block text-white-50"><i class="bi bi-person-circle me-1"></i>@nombre</span>
+    <a asp-controller="Login" asp-action="Salir" class="btn btn-qs-danger btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Salir</a>
   </div>
 </nav>
 <div class="container mt-5">
@@ -23,15 +16,15 @@
   <h4 class="fw-bold mb-4">Bienvenido/a, @nombre</h4>
   <div class="row g-3">
     <div class="col-6 col-md-3">
-      <a asp-controller="Pedido" asp-action="Index" class="menu-card p-4 bg-white">
-        <div class="menu-icon" style="background:#fff0f0"><i class="bi bi-bag-check" style="color:#e63946"></i></div>
+      <a asp-controller="Pedido" asp-action="Index" class="qs-menu-card p-4">
+        <div class="qs-menu-icon mb-3"><i class="bi bi-bag-check"></i></div>
         <div class="fw-bold">Pedidos</div>
         <div class="text-muted small mt-1">Aprobar y gestionar</div>
       </a>
     </div>
     <div class="col-6 col-md-3">
-      <a asp-controller="Producto" asp-action="Index" class="menu-card p-4 bg-white">
-        <div class="menu-icon" style="background:#f0f4ff"><i class="bi bi-grid" style="color:#3a6fd8"></i></div>
+      <a asp-controller="Producto" asp-action="Index" class="qs-menu-card p-4">
+        <div class="qs-menu-icon mb-3"><i class="bi bi-grid"></i></div>
         <div class="fw-bold">Productos</div>
         <div class="text-muted small mt-1">Catálogo y stock</div>
       </a>
