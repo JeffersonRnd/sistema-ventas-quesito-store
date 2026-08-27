@@ -4,13 +4,13 @@ Admin123
 
 
 EMPLEADO:
-theylor4444@gmail.com
-12345678
+empleado001@gmail.com
+abcd1234
 
 
 REPARTIDOR:
-darwwwin@gmail.com
-dar135
+repartidor001@gmail.com
+xyz01234
 
 
 CLIENTE
