@@ -1,25 +1,25 @@
 @model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
+@using sistema_ventas_quesito_store.Models
 @{ Layout = null; }
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Productos — Admin</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="~/css/store.css"/>
 <style>
-  body { background:#f5f5f5; font-family:'Segoe UI',sans-serif; }
-  .topbar { background:#111; color:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; }
-  .topbar .brand { font-weight:900; letter-spacing:2px; } .topbar .brand span { color:#e63946; }
+  body { background:var(--qs-bg); }
   th { font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; }
   .img-thumb { width:48px; height:48px; object-fit:cover; border-radius:4px; background:#ddd; }
   .desc-cell { max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 </style>
 </head>
 <body>
-<div class="topbar">
-  <span class="brand">QUESITO<span>STORE</span> <small class="fw-normal ms-2 text-muted" style="font-size:.8rem">Productos</small></span>
+<div class="qs-nav">
+  <span class="qs-brand">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Productos</small></span>
   <div class="d-flex gap-2">
-    <a asp-action="Crear" class="btn btn-sm" style="background:#e63946;color:#fff"><i class="bi bi-plus-lg me-1"></i>Nuevo Producto</a>
-    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-sm btn-outline-light"><i class="bi bi-arrow-left me-1"></i>Panel</a>
+    <a asp-action="Crear" class="btn btn-qs btn-sm"><i class="bi bi-plus-lg me-1"></i>Nuevo Producto</a>
+    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-qs-nav btn-sm"><i class="bi bi-arrow-left me-1"></i>Panel</a>
   </div>
 </div>
 <div class="container-fluid mt-4 px-4">
@@ -39,7 +39,12 @@
         </td>
         <td class="fw-semibold">@p.Nombre</td>
         <td>@p.Categoria?.NombreCategoria</td>
-        <td>@p.Talla</td>
+        <td>
+          @foreach (var t in TallaHelper.Parse(p.Talla))
+          {
+            <span class="badge @(t.Stock > 0 ? "bg-success" : "bg-secondary") me-1 mb-1">@t.Nombre: @t.Stock</span>
+          }
+        </td>
         <td class="desc-cell" title="@p.Descripcion">@p.Descripcion</td>
         <td>S/ @p.Precio.ToString("0.00")</td>
         <td>@p.Stock</td>

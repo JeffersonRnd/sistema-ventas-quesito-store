@@ -1,48 +1,84 @@
 @model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
-@{
-    Layout = null;
-}
+@using sistema_ventas_quesito_store.Models
+@{ Layout = null; }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Catálogo</title>
+    <title>Catálogo — Quesito Store</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/store.css" />
 </head>
-<body class="bg-light">
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between mb-3">
-            <h4>🛍️ Catálogo Quesito Store</h4>
-            <div>
-                <a asp-controller="Welcome" asp-action="Cliente" class="btn btn-outline-secondary btn-sm">⬅ Panel</a>
-                <a asp-action="Carrito" class="btn btn-warning btn-sm">🛒 Mi Carrito</a>
-                <a asp-action="MisPedidos" class="btn btn-outline-primary btn-sm">📦 Mis Pedidos</a>
-                <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm">Salir</a>
+<body class="qs-body">
+    <header class="qs-header">
+        <div class="qs-topbar">
+            <a class="qs-brand" href="#"><i class="bi bi-bag-heart-fill" style="color:#4d381d"></i>QUESITO<span>STORE</span></a>
+            <div class="qs-nav-links">
+                <a asp-controller="Welcome" asp-action="Cliente" class="btn btn-qs-outline btn-sm"><i class="bi bi-arrow-left me-1"></i>Panel</a>
+                <a asp-action="MisPedidos" class="btn btn-qs-outline btn-sm"><i class="bi bi-box-seam me-1"></i>Mis pedidos</a>
+                <a asp-action="Carrito" class="btn btn-qs-primary btn-sm qs-cart-btn">
+                    <i class="bi bi-cart3 me-1"></i>Carrito
+                </a>
+                <a asp-controller="Login" asp-action="Salir" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i></a>
             </div>
         </div>
-        <div class="row row-cols-2 row-cols-md-4 g-3">
+    </header>
+
+    <section class="qs-hero">
+        <div class="container">
+            <h1><i class="bi bi-stars me-1"></i>Ropa y calzado urbano en Cajamarca</h1>
+            <p>Encuentra tu talla, agrégala al carrito y recíbelo donde quieras.</p>
+        </div>
+    </section>
+
+    <div class="container mb-5">
+        <h2 class="qs-section-title"><i class="bi bi-grid-fill"></i>Catálogo de productos</h2>
+        <div class="qs-grid">
             @foreach (var p in Model)
             {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
+                var tallas = TallaHelper.Parse(p.Talla);
+                <div class="qs-card">
+                    <div class="qs-card-img" @(!string.IsNullOrEmpty(p.ImagenUrl) ? $"onclick=\"verImagen('{p.ImagenUrl}','{p.Nombre}')\"" : "")>
                         @if (!string.IsNullOrEmpty(p.ImagenUrl))
                         {
-                            <img src="@p.ImagenUrl" class="card-img-top" style="height:160px;object-fit:cover;cursor:zoom-in"
-                                 onclick="verImagen('@p.ImagenUrl','@p.Nombre')" title="Ver imagen completa" />
+                            <img src="@p.ImagenUrl" alt="@p.Nombre" />
                         }
-                        <div class="card-body p-2">
-                            <p class="fw-bold mb-1">@p.Nombre</p>
-                            
-                            <small class="text-muted">@p.Categoria?.NombreCategoria | Tallas: @(string.Join(", ", (p.Talla ?? "").Split(',').Select(t => t.Trim()).Where(t => t != "")))</small>
-                            <p class="small text-secondary mb-1">@p.Descripcion</p>
-                            <p class="text-success fw-bold mt-1">S/ @p.Precio.ToString("0.00")</p>
-                            <p class="small">Stock: @p.Stock</p>
-                            <form class="form-agregar" data-stock="@p.Stock">
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted"><i class="bi bi-image fs-2"></i></div>
+                        }
+                    </div>
+                    <div class="qs-card-body">
+                        <span class="qs-cat-tag">@p.Categoria?.NombreCategoria</span>
+                        <div class="qs-card-title">@p.Nombre</div>
+                        <div class="qs-card-desc">@p.Descripcion</div>
+                        <div class="qs-price mb-1">S/ @p.Precio.ToString("0.00")</div>
+                        <div class="qs-stock-note">Stock total: @p.Stock</div>
+                        <div class="qs-card-footer">
+                            <form class="form-agregar" data-stock="@p.Stock" data-tallas="@(tallas.Count > 0 ? "1" : "0")">
                                 <input type="hidden" name="idProducto" value="@p.IdProducto" />
-                                <div class="input-group input-group-sm mb-1">
-                                    <input type="number" name="cantidad" value="1" min="1" max="@p.Stock" class="form-control" />
-                                    <button type="submit" class="btn btn-dark">Agregar al carrito</button>
+                                @if (tallas.Count > 0)
+                                {
+                                    <select name="talla" class="form-select form-select-sm mb-1">
+                                        <option value="">-- Talla --</option>
+                                        @foreach (var t in tallas)
+                                        {
+                                            if (t.Stock > 0)
+                                            {
+                                                <option value="@t.Nombre" data-stock="@t.Stock">@t.Nombre (@t.Stock disp.)</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@t.Nombre" data-stock="0" class="talla-agotada" disabled>@t.Nombre — Agotado</option>
+                                            }
+                                        }
+                                    </select>
+                                }
+                                <div class="input-group input-group-sm">
+                                    <input type="number" name="cantidad" value="1" min="1" class="form-control" />
+                                    <button type="submit" class="btn btn-qs-primary"><i class="bi bi-cart-plus"></i></button>
                                 </div>
                             </form>
                         </div>
@@ -50,7 +86,15 @@
                 </div>
             }
         </div>
+        @if (!Model.Any())
+        {
+            <div class="alert alert-secondary mt-3"><i class="bi bi-info-circle me-1"></i>No hay productos disponibles por el momento.</div>
+        }
     </div>
+
+    <footer class="qs-footer">
+        <strong>Quesito Store</strong> · Cajamarca, Perú · Envíos a domicilio y recojo en tienda
+    </footer>
 
     <div class="modal fade" id="modalImagen" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -78,28 +122,40 @@
             document.querySelectorAll('.form-agregar').forEach(function(form) {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    var stock = parseInt(form.dataset.stock);
+                    var requiereTalla = form.dataset.tallas === '1';
+                    var tallaSelect = form.querySelector('select[name=talla]');
+                    var talla = tallaSelect ? tallaSelect.value : '';
+
+                    if (requiereTalla && !talla) {
+                        alert('Selecciona una talla antes de agregar al carrito.');
+                        return;
+                    }
+
+                    var stockMax = requiereTalla
+                        ? parseInt(tallaSelect.selectedOptions[0].dataset.stock)
+                        : parseInt(form.dataset.stock);
+
                     var cantidadInput = form.querySelector('input[name=cantidad]');
                     var cantidad = parseInt(cantidadInput.value);
                     if (!cantidad || cantidad < 1) {
                         alert('La cantidad debe ser al menos 1.');
                         return;
                     }
-                    if (cantidad > stock) {
-                        alert('No puedes comprar más de ' + stock + ' unidad(es), es el stock disponible.');
+                    if (cantidad > stockMax) {
+                        alert('No puedes comprar más de ' + stockMax + ' unidad(es), es el stock disponible.');
                         return;
                     }
                     var idProducto = form.querySelector('input[name=idProducto]').value;
                     fetch('@Url.Action("AgregarCarrito")', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'idProducto=' + idProducto + '&cantidad=' + cantidad
+                        body: 'idProducto=' + idProducto + '&cantidad=' + cantidad + '&talla=' + encodeURIComponent(talla)
                     })
                         .then(r => r.json())
                         .then(data => {
                             alert(data.mensaje);
                             if (data.ok && data.restante <= 0) {
-                                alert('Atención: se agotará el stock de este producto.');
+                                alert('Atención: se agotará el stock de esta opción.');
                             }
                         })
                         .catch(() => alert('Ocurrió un error al agregar el producto.'));

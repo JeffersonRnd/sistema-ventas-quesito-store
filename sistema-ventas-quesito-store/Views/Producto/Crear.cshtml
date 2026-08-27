@@ -10,17 +10,17 @@
     <title>Nuevo Producto</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/store.css" />
     <style>
             body {
-                background: #f5f5f5;
-                font-family: 'Segoe UI',sans-serif;
+                background: var(--qs-bg);
             }
     </style>
 </head>
 <body>
     <div class="container mt-4" style="max-width:620px">
-        <h5 class="fw-bold mb-4"><i class="bi bi-plus-circle me-2" style="color:#e63946"></i>Nuevo Producto</h5>
-        <div class="card shadow-sm">
+        <h5 class="fw-bold mb-4"><i class="bi bi-plus-circle me-2" style="color:var(--qs-dark)"></i>Nuevo Producto</h5>
+        <div class="qs-form-panel">
             <div class="card-body">
                 @if (!ViewData.ModelState.IsValid)
                 {
@@ -51,7 +51,8 @@
                     </div>
                     <div class="row">
                         <div class="col mb-3">
-                            <label class="form-label fw-semibold">Tallas disponibles <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold">Tallas y disponibilidad <span class="text-danger">*</span></label>
+                            <div class="form-text mb-1">Marca las tallas que ofreces e indica el stock (unidades) de cada una. Stock 0 = talla agotada, no seleccionable por el cliente.</div>
                             <div id="TallasContainer" class="d-flex flex-wrap gap-3 border rounded p-2"></div>
                             <input asp-for="Talla" type="hidden" id="Talla" />
                             <span asp-validation-for="Talla" class="text-danger small"></span>
@@ -76,7 +77,7 @@
                         <img id="preview" src="#" alt="Vista previa" class="mt-2 d-none rounded" style="max-height:160px; border:1px solid #ddd;" />
                     </div>
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn text-white fw-bold" style="background:#e63946">Guardar Producto</button>
+                        <button type="submit" class="btn btn-qs-primary fw-bold">Guardar Producto</button>
                         <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
                     </div>
                 </form>
@@ -92,27 +93,48 @@
                 "pantalones": ["XS", "S", "M", "L", "XL", "XXL"]
             };
 
+            // Parsea el formato guardado "Nombre:Stock,Nombre:Stock" -> { Nombre: Stock }
+            function parseTallaStock(valor) {
+                const mapa = {};
+                (valor || '').split(',').map(s => s.trim()).filter(Boolean).forEach(par => {
+                    const [nombre, stock] = par.split(':');
+                    if (nombre) mapa[nombre.trim()] = parseInt(stock) || 0;
+                });
+                return mapa;
+            }
+
             function actualizarTallas(seleccionActual) {
                 const sel = document.getElementById('IdCategoria');
                 const nombre = (sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '').trim().toLowerCase();
                 const cont = document.getElementById('TallasContainer');
                 cont.innerHTML = '';
-                const seleccionadas = (seleccionActual || '').split(',').map(s => s.trim()).filter(Boolean);
+                const actuales = parseTallaStock(seleccionActual);
                 (tallasPorCategoria[nombre] || []).forEach(t => {
                     const id = 'talla_' + t.replace(/[^A-Za-z0-9]/g, '');
+                    const marcada = Object.prototype.hasOwnProperty.call(actuales, t);
+                    const stockVal = marcada ? actuales[t] : 0;
                     const wrap = document.createElement('div');
-                    wrap.className = 'form-check form-check-inline m-0';
-                    wrap.innerHTML = '<input class="form-check-input talla-check" type="checkbox" value="' + t + '" id="' + id + '" onchange="actualizarHiddenTalla()">' +
-                        '<label class="form-check-label" for="' + id + '">' + t + '</label>';
+                    wrap.className = 'border rounded p-2';
+                    wrap.style.minWidth = '110px';
+                    wrap.innerHTML =
+                        '<div class="form-check m-0">' +
+                        '<input class="form-check-input talla-check" type="checkbox" value="' + t + '" id="' + id + '" onchange="actualizarHiddenTalla()"' + (marcada ? ' checked' : '') + '>' +
+                        '<label class="form-check-label fw-semibold" for="' + id + '">' + t + '</label>' +
+                        '</div>' +
+                        '<input type="number" min="0" step="1" class="form-control form-control-sm mt-1 talla-stock" data-talla="' + t + '" value="' + stockVal + '" placeholder="Stock" oninput="actualizarHiddenTalla()">';
                     cont.appendChild(wrap);
-                    if (seleccionadas.includes(t)) wrap.querySelector('input').checked = true;
                 });
                 actualizarHiddenTalla();
             }
 
             function actualizarHiddenTalla() {
-                const seleccionadas = Array.from(document.querySelectorAll('.talla-check:checked')).map(c => c.value);
-                document.getElementById('Talla').value = seleccionadas.join(',');
+                const pares = [];
+                document.querySelectorAll('.talla-check:checked').forEach(chk => {
+                    const stockInput = document.querySelector('.talla-stock[data-talla="' + CSS.escape(chk.value) + '"]');
+                    const stock = stockInput ? (parseInt(stockInput.value) || 0) : 0;
+                    pares.push(chk.value + ':' + stock);
+                });
+                document.getElementById('Talla').value = pares.join(',');
             }
 
             function formatearPrecio(input) {

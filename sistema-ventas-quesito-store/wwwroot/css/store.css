@@ -1,0 +1,95 @@
+:root{
+  /* Paleta oficial de Quesito Store, tomada del logo (queso mostaza + marrón) */
+  --qs-dark:#4d381d;
+  --qs-dark2:#33230f;
+  --qs-yellow:#f3b735;
+  --qs-yellow-dark:#dba02a;
+  --qs-accent:#4d381d;
+  --qs-accent-dark:#33230f;
+  --qs-green:#3c8a44;
+  --qs-red:#c0392b;
+  --qs-bg:#faf6ee;
+  --qs-text:#33261a;
+  --qs-muted:#7a6a55;
+  --qs-radius:8px;
+}
+*{font-family:'Segoe UI',system-ui,sans-serif}
+body.qs-body{background:var(--qs-bg);color:var(--qs-text)}
+
+/* Header */
+.qs-header{background:var(--qs-yellow);position:sticky;top:0;z-index:1030;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.qs-header .qs-topbar{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.25rem;gap:1rem;flex-wrap:wrap}
+.qs-brand{font-weight:900;letter-spacing:.5px;font-size:1.25rem;color:var(--qs-dark);text-decoration:none;display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.qs-brand i{color:var(--qs-dark)}
+.qs-brand span{color:#8a5a1e}
+.qs-nav-links{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.qs-nav-links .btn{border-radius:var(--qs-radius);font-weight:600}
+.qs-cart-btn{position:relative}
+.qs-badge-count{position:absolute;top:-6px;right:-6px;background:var(--qs-red);color:#fff;font-size:.65rem;border-radius:50%;padding:1px 6px;font-weight:700}
+
+/* Hero */
+.qs-hero{background:linear-gradient(120deg,var(--qs-dark) 0%,#6b4a22 100%);color:#fff;padding:2.2rem 1.25rem;margin-bottom:1.5rem}
+.qs-hero h1{font-weight:800;font-size:1.6rem;margin-bottom:.25rem}
+.qs-hero h1 .bi{color:var(--qs-yellow)}
+.qs-hero p{color:#f0e2c9;margin:0}
+
+/* Product cards */
+.qs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem}
+@media(min-width:576px){.qs-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.qs-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1200px){.qs-grid{grid-template-columns:repeat(5,1fr)}}
+
+.qs-card{background:#fff;border-radius:var(--qs-radius);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.1);border:1px solid #eee;display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+.qs-card:hover{box-shadow:0 8px 20px rgba(0,0,0,.14);transform:translateY(-2px)}
+.qs-card-img{height:170px;background:#fafafa;position:relative;overflow:hidden;cursor:zoom-in}
+.qs-card-img img{width:100%;height:100%;object-fit:cover}
+.qs-card-body{padding:.75rem .85rem 1rem;display:flex;flex-direction:column;flex:1}
+.qs-cat-tag{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--qs-muted);font-weight:700}
+.qs-card-title{font-weight:500;font-size:.9rem;margin:.15rem 0 .3rem;line-height:1.3;color:var(--qs-text)}
+.qs-card-desc{font-size:.78rem;color:var(--qs-muted);margin-bottom:.4rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.qs-price{color:var(--qs-text);font-weight:600;font-size:1.35rem}
+.qs-stock-note{font-size:.72rem;color:var(--qs-muted);margin-bottom:.5rem}
+.qs-card-footer{margin-top:auto}
+.talla-agotada{color:#adb5bd}
+.qs-ribbon{position:absolute;top:8px;left:0;background:var(--qs-red);color:#fff;font-size:.65rem;font-weight:700;padding:.2rem .6rem;border-radius:0 3px 3px 0}
+
+.btn-qs-primary{background:var(--qs-accent);color:#fff;font-weight:700;border:none}
+.btn-qs-primary:hover{background:var(--qs-accent-dark);color:#fff}
+.btn-qs-outline{border:1px solid #cfd3d8;background:#fff;color:var(--qs-text);font-weight:600}
+.btn-qs-outline:hover{background:#f1f2f4}
+
+/* Sections / footer */
+.qs-section-title{font-weight:700;font-size:1.1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;color:var(--qs-text)}
+.qs-footer{background:var(--qs-dark);color:#c7cad1;padding:1.75rem 1.25rem;margin-top:3rem;font-size:.85rem;text-align:center}
+.qs-footer strong{color:#fff}
+
+/* Cart & orders */
+.qs-panel{background:#fff;border-radius:var(--qs-radius);box-shadow:0 1px 2px rgba(0,0,0,.1);border:1px solid #eee}
+.qs-order-card{background:#fff;border:1px solid #eee;border-radius:var(--qs-radius);overflow:hidden;margin-bottom:1rem}
+.qs-order-header{background:#fafbfc;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
+
+/* Nav oscuro para paneles internos (empleado, repartidor, admin, producto) */
+.qs-nav{background:var(--qs-dark);padding:.85rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem;border-bottom:3px solid var(--qs-yellow)}
+.qs-nav .qs-brand{color:#fff}
+.qs-nav .qs-brand i{color:var(--qs-yellow)}
+.qs-nav .qs-brand span{color:var(--qs-yellow)}
+.qs-nav small{color:#d8c9ae !important}
+
+.btn-qs{background:var(--qs-yellow);color:var(--qs-dark);border:none;font-weight:700}
+.btn-qs:hover{background:var(--qs-yellow-dark);color:var(--qs-dark)}
+.btn-qs-nav{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:600}
+.btn-qs-nav:hover{background:rgba(255,255,255,.12);color:#fff}
+.btn-qs-danger{background:var(--qs-red);color:#fff;border:none;font-weight:600}
+.btn-qs-danger:hover{background:#a5342a;color:#fff}
+
+/* Contenedores/paneles internos */
+.qs-body-alt{background:var(--qs-bg)}
+.qs-card-plain{border:none;border-radius:var(--qs-radius);box-shadow:0 1px 6px rgba(0,0,0,.08);background:#fff}
+.qs-form-panel{background:#fff;border-radius:var(--qs-radius);box-shadow:0 1px 8px rgba(0,0,0,.1);border:1px solid #eee}
+.qs-form-panel .form-label{font-weight:600;color:var(--qs-text)}
+.qs-form-panel .form-control:focus,.qs-form-panel .form-select:focus{border-color:var(--qs-yellow);box-shadow:0 0 0 .2rem rgba(243,183,53,.35)}
+
+/* Menú de accesos (dashboards Welcome) */
+.qs-menu-card{background:#fff;border-radius:var(--qs-radius);box-shadow:0 1px 6px rgba(0,0,0,.08);border:1px solid #eee;text-decoration:none;color:var(--qs-text);display:block;transition:box-shadow .15s,transform .15s}
+.qs-menu-card:hover{box-shadow:0 8px 20px rgba(0,0,0,.14);transform:translateY(-2px);color:var(--qs-text)}
+.qs-menu-icon{width:48px;height:48px;border-radius:50%;background:var(--qs-yellow);color:var(--qs-dark);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
