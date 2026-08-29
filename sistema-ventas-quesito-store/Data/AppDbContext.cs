@@ -108,18 +108,51 @@ namespace sistema_ventas_quesito_store.Data
                 new Rol { IdRol = 4, NombreRol = "Cliente" }
             );
 
-            // Admin inicial
+            // Usuarios iniciales
             modelBuilder.Entity<Usuario>().HasData(
                 new Usuario
                 {
-                    IdUsuario      = 1,
+                    IdUsuario = 1,
                     NombreCompleto = "Administrador",
-                    DNI            = "00000000",
-                    Celular        = "999999999",
-                    Direccion      = "Cajamarca",
-                    Correo         = "admin@quesitostore.com",
-                    Contrasena     = "Admin123",
-                    IdRol          = 1
+                    DNI = "00000000",
+                    Celular = "999999999",
+                    Direccion = "Cajamarca",
+                    Correo = "admin@quesitostore.com",
+                    Contrasena = "admin123",
+                    IdRol = 1
+                },
+                new Usuario
+                {
+                    IdUsuario = 2,
+                    NombreCompleto = "Empleado",
+                    DNI = "00000001",
+                    Celular = "999999998",
+                    Direccion = "Cajamarca",
+                    Correo = "empleado@quesitostore.com",
+                    Contrasena = "empleado123",
+                    IdRol = 2
+                },
+                new Usuario
+                {
+                    IdUsuario = 3,
+                    NombreCompleto = "Repartidor",
+                    DNI = "00000002",
+                    Celular = "999999997",
+                    Direccion = "Cajamarca",
+                    Correo = "repartidor@quesitostore.com",
+                    Contrasena = "repartidor123",
+                    IdRol = 3
+                },
+                new Usuario
+                {
+                    IdUsuario = 4,
+                    NombreCompleto = "Cliente",
+                    DNI = "00000003",
+                    Celular = "999999996",
+                    Direccion = "Cajamarca",
+                    Correo = "cliente@quesitostore.com",
+                    Contrasena = "cliente123",
+                    IdRol = 4
                 }
             );
 

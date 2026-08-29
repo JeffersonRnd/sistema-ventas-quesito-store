@@ -18,10 +18,20 @@
     </style>
 </head>
 <body>
-    <div class="container mt-4" style="max-width:620px">
-        <h5 class="fw-bold mb-4"><i class="bi bi-plus-circle me-2" style="color:var(--qs-dark)"></i>Nuevo Producto</h5>
+    <div class="container my-4" style="max-width:680px">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <a asp-action="Index" class="btn btn-qs-outline btn-sm" title="Volver al listado"><i class="bi bi-arrow-left"></i></a>
+            <h5 class="fw-bold mb-0"><i class="bi bi-plus-circle me-2" style="color:var(--qs-dark)"></i>Nuevo Producto</h5>
+        </div>
         <div class="qs-form-panel">
-            <div class="card-body">
+            <div class="qs-form-header">
+                <i class="bi bi-box-seam"></i>
+                <div>
+                    <div class="fw-bold">Datos del producto</div>
+                    <div class="text-muted small">Completa la información para publicarlo en el catálogo</div>
+                </div>
+            </div>
+            <div class="card-body p-3 p-md-4">
                 @if (!ViewData.ModelState.IsValid)
                 {
                     <div class="alert alert-danger py-2 small">
@@ -32,53 +42,59 @@
                     </div>
                 }
                 <form asp-action="Crear" method="post" enctype="multipart/form-data" onsubmit="return prepararEnvio()">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
-                        <select id="IdCategoria" asp-for="IdCategoria" asp-items="ViewBag.Categorias" class="form-select" onchange="actualizarTallas()" required>
-                            <option value="">-- Seleccionar --</option>
-                        </select>
-                        <span asp-validation-for="IdCategoria" class="text-danger small"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
-                        <input asp-for="Nombre" class="form-control" required />
-                        <span asp-validation-for="Nombre" class="text-danger small"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Descripción</label>
-                        <textarea asp-for="Descripcion" class="form-control" rows="2" placeholder="Ej: Color negro, tela algodón..."></textarea>
-                        <span asp-validation-for="Descripcion" class="text-danger small"></span>
-                    </div>
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label class="form-label fw-semibold">Tallas y disponibilidad <span class="text-danger">*</span></label>
-                            <div class="form-text mb-1">Marca las tallas que ofreces e indica el stock (unidades) de cada una. Stock 0 = talla agotada, no seleccionable por el cliente.</div>
-                            <div id="TallasContainer" class="d-flex flex-wrap gap-3 border rounded p-2"></div>
-                            <input asp-for="Talla" type="hidden" id="Talla" />
-                            <span asp-validation-for="Talla" class="text-danger small"></span>
+                    <p class="qs-form-section"><i class="bi bi-tag"></i>Información general</p>
+                    <div class="row g-3 mb-2">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
+                            <select id="IdCategoria" asp-for="IdCategoria" asp-items="ViewBag.Categorias" class="form-select" onchange="actualizarTallas()" required>
+                                <option value="">-- Seleccionar --</option>
+                            </select>
+                            <span asp-validation-for="IdCategoria" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                            <input asp-for="Nombre" class="form-control" required />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Descripción</label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="2" placeholder="Ej: Color negro, tela algodón..."></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col mb-3">
+
+                    <p class="qs-form-section"><i class="bi bi-rulers"></i>Tallas y stock</p>
+                    <div class="mb-3">
+                        <div class="form-text mb-1">Marca las tallas que ofreces e indica el stock (unidades) de cada una. Stock 0 = talla agotada, no seleccionable por el cliente.</div>
+                        <div id="TallasContainer" class="d-flex flex-wrap gap-3 border rounded p-2"></div>
+                        <input asp-for="Talla" type="hidden" id="Talla" />
+                        <span asp-validation-for="Talla" class="text-danger small"></span>
+                    </div>
+
+                    <p class="qs-form-section"><i class="bi bi-cash-coin"></i>Precio e inventario</p>
+                    <div class="row g-3 mb-2">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label fw-semibold">Precio (S/) <span class="text-danger">*</span></label>
                             <input type="text" id="PrecioDisplay" class="form-control" placeholder="1 500.00" inputmode="decimal" oninput="formatearPrecio(this)" value="@(Model != null && Model.Precio > 0 ? Model.Precio.ToString("0.00") : "")" required />
                             <input asp-for="Precio" type="hidden" id="Precio" />
                             <span asp-validation-for="Precio" class="text-danger small"></span>
                         </div>
-                        <div class="col mb-3">
+                        <div class="col-12 col-sm-6">
                             <label class="form-label fw-semibold">Stock <span class="text-danger">*</span></label>
                             <input asp-for="Stock" type="number" min="0" step="1" class="form-control" required />
                             <span asp-validation-for="Stock" class="text-danger small"></span>
                         </div>
                     </div>
+
+                    <p class="qs-form-section"><i class="bi bi-image"></i>Imagen</p>
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Imagen del producto <span class="text-danger">*</span></label>
                         <input type="file" name="imagen" class="form-control" accept="image/*" onchange="previewImg(this)" />
                         <img id="preview" src="#" alt="Vista previa" class="mt-2 d-none rounded" style="max-height:160px; border:1px solid #ddd;" />
                     </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-qs-primary fw-bold">Guardar Producto</button>
-                        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <button type="submit" class="btn btn-qs-primary fw-bold"><i class="bi bi-check-circle me-1"></i>Guardar Producto</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i>Cancelar</a>
                     </div>
                 </form>
             </div>
@@ -181,5 +197,8 @@
                 actualizarTallas("@Model?.Talla");
             };
     </script>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
 </body>
 </html>

@@ -11,23 +11,45 @@
     <a asp-controller="Login" asp-action="Salir" class="btn btn-qs-danger btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Salir</a>
   </div>
 </div></header>
-<section class="qs-hero"><div class="container"><h1>Hola, @nombre</h1><p>Explora el catálogo y revisa tus pedidos.</p></div></section>
+<section class="qs-hero"><div class="container"><h1><i class="bi bi-emoji-smile me-2"></i>Hola, @nombre</h1><p>Explora el catálogo, arma tu pedido y haz seguimiento a tus compras.</p></div></section>
 <div class="container">
-  <div class="row g-3">
-    <div class="col-6 col-md-3">
+  <p class="qs-section-title"><i class="bi bi-grid-fill" style="color:var(--qs-yellow-dark)"></i>¿Qué quieres hacer hoy?</p>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4">
       <a asp-controller="Pedido" asp-action="Catalogo" class="qs-card p-4 text-decoration-none d-block">
         <div class="qs-cat-tag"><i class="bi bi-bag" style="color:var(--qs-dark);font-size:1.4rem"></i></div>
         <div class="qs-card-title mt-2 text-dark">Catálogo</div>
         <div class="text-muted small">Ver productos</div>
+        <span class="qs-menu-cta">Explorar<i class="bi bi-arrow-right"></i></span>
       </a>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-4">
+      <a asp-controller="Pedido" asp-action="Carrito" class="qs-card p-4 text-decoration-none d-block">
+        <div class="qs-cat-tag"><i class="bi bi-cart3" style="color:var(--qs-green);font-size:1.4rem"></i></div>
+        <div class="qs-card-title mt-2 text-dark">Mi Carrito</div>
+        <div class="text-muted small">Revisar y comprar</div>
+        <span class="qs-menu-cta">Ir al carrito<i class="bi bi-arrow-right"></i></span>
+      </a>
+    </div>
+    <div class="col-6 col-md-4">
       <a asp-controller="Pedido" asp-action="MisPedidos" class="qs-card p-4 text-decoration-none d-block">
         <div class="qs-cat-tag"><i class="bi bi-receipt" style="color:#8a5a1e;font-size:1.4rem"></i></div>
         <div class="qs-card-title mt-2 text-dark">Mis Pedidos</div>
         <div class="text-muted small">Seguimiento</div>
+        <span class="qs-menu-cta">Ver estado<i class="bi bi-arrow-right"></i></span>
       </a>
     </div>
   </div>
+
+  <div class="qs-tip-card mb-5">
+    <div class="qs-tip-icon"><i class="bi bi-truck"></i></div>
+    <div>
+      <h6>¿Cómo funciona?</h6>
+      <p>Elige tus productos en el catálogo, agrégalos al carrito y confirma tu pedido. Podrás seguir su estado en "Mis Pedidos" hasta que llegue a tus manos.</p>
+    </div>
+  </div>
 </div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
 </body></html>

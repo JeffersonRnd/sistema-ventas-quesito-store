@@ -1,20 +1,17 @@
-ADMINISTRADOR:
+ADMINISTRADOR
 admin@quesitostore.com
-Admin123
+admin123
 
+EMPLEADO
+empleado@quesitostore.com
+empleado123
 
-EMPLEADO:
-empleado001@gmail.com
-abcd1234
-
-
-REPARTIDOR:
-repartidor001@gmail.com
-xyz01234
-
+REPARTIDOR
+repartidor@quesitostore.com
+repartidor123
 
 CLIENTE
-brayan123@gmail.com
-BR42340
+cliente@quesitostore.com
+cliente123
 
 
