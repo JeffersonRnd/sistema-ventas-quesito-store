@@ -13,6 +13,3 @@ repartidor123
 CLIENTE
 cliente@quesitostore.com
 cliente123
-
-
-
