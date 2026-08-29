@@ -23,34 +23,34 @@
   </div>
 </div>
 <div class="container-fluid mt-4 px-4">
-  <table class="table table-bordered bg-white shadow-sm small">
+  <table class="table table-bordered bg-white shadow-sm small qs-table-stack">
     <thead class="table-dark">
       <tr><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Talla</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
     </thead>
     <tbody>
     @foreach(var p in Model){
       <tr class="@(p.Activo ? "" : "opacity-50")">
-        <td>
+        <td data-label="Imagen" class="qs-td-plain">
           @if(!string.IsNullOrEmpty(p.ImagenUrl)){
             <img src="@p.ImagenUrl" class="img-thumb"/>
           } else {
             <div class="img-thumb d-flex align-items-center justify-content-center text-muted"><i class="bi bi-image"></i></div>
           }
         </td>
-        <td class="fw-semibold">@p.Nombre</td>
-        <td>@p.Categoria?.NombreCategoria</td>
-        <td>
+        <td data-label="Nombre" class="fw-semibold">@p.Nombre</td>
+        <td data-label="Categoría">@p.Categoria?.NombreCategoria</td>
+        <td data-label="Talla">
           @foreach (var t in TallaHelper.Parse(p.Talla))
           {
             <span class="badge @(t.Stock > 0 ? "bg-success" : "bg-secondary") me-1 mb-1">@t.Nombre: @t.Stock</span>
           }
         </td>
-        <td class="desc-cell" title="@p.Descripcion">@p.Descripcion</td>
-        <td>S/ @p.Precio.ToString("0.00")</td>
-        <td>@p.Stock</td>
-        <td><span class="badge @(p.Activo ? "bg-success" : "bg-secondary")">@(p.Activo ? "Activo" : "Inactivo")</span></td>
-        <td>
-          <a asp-action="Editar" asp-route-id="@p.IdProducto" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+        <td data-label="Descripción" class="desc-cell" title="@p.Descripcion">@p.Descripcion</td>
+        <td data-label="Precio">S/ @p.Precio.ToString("0.00")</td>
+        <td data-label="Stock">@p.Stock</td>
+        <td data-label="Estado"><span class="badge @(p.Activo ? "bg-success" : "bg-secondary")">@(p.Activo ? "Activo" : "Inactivo")</span></td>
+        <td data-label="Acciones" class="qs-td-actions">
+          <a asp-action="Editar" asp-route-id="@p.IdProducto" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
           <form asp-action="Desactivar" asp-route-id="@p.IdProducto" method="post" style="display:inline">
             <button class="btn btn-sm @(p.Activo ? "btn-outline-secondary" : "btn-outline-success")" title="@(p.Activo ? "Desactivar" : "Activar")">
               <i class="bi @(p.Activo ? "bi-eye-slash" : "bi-eye")"></i>
@@ -58,12 +58,21 @@
           </form>
           <form asp-action="Eliminar" asp-route-id="@p.IdProducto" method="post" style="display:inline"
                 onsubmit="return confirm('¿Eliminar este producto? Esta acción no se puede deshacer.')">
-            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+            <button class="btn btn-danger btn-sm" title="Eliminar"><i class="bi bi-trash"></i></button>
           </form>
         </td>
       </tr>
     }
     </tbody>
   </table>
+  @if(!Model.Any()){
+    <div class="qs-tip-card">
+      <div class="qs-tip-icon"><i class="bi bi-inbox"></i></div>
+      <div><h6>Sin productos aún</h6><p>Crea tu primer producto con el botón "Nuevo Producto".</p></div>
+    </div>
+  }
 </div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
 </body></html>

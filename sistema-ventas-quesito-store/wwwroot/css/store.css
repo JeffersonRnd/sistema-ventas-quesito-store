@@ -14,6 +14,10 @@
   --qs-radius:8px;
 }
 *{font-family:'Segoe UI',system-ui,sans-serif}
+html{height:100%}
+body{min-height:100vh;display:flex;flex-direction:column}
+body.qs-body,body.qs-body-alt{background:var(--qs-bg)}
+.qs-footer{margin-top:auto !important}
 body.qs-body{background:var(--qs-bg);color:var(--qs-text)}
 
 /* Header */
@@ -85,11 +89,46 @@ body.qs-body{background:var(--qs-bg);color:var(--qs-text)}
 /* Contenedores/paneles internos */
 .qs-body-alt{background:var(--qs-bg)}
 .qs-card-plain{border:none;border-radius:var(--qs-radius);box-shadow:0 1px 6px rgba(0,0,0,.08);background:#fff}
-.qs-form-panel{background:#fff;border-radius:var(--qs-radius);box-shadow:0 1px 8px rgba(0,0,0,.1);border:1px solid #eee}
+.qs-form-panel{background:#fff;border-radius:var(--qs-radius);box-shadow:0 1px 8px rgba(0,0,0,.1);border:1px solid #eee;overflow:hidden}
 .qs-form-panel .form-label{font-weight:600;color:var(--qs-text)}
 .qs-form-panel .form-control:focus,.qs-form-panel .form-select:focus{border-color:var(--qs-yellow);box-shadow:0 0 0 .2rem rgba(243,183,53,.35)}
+.qs-form-header{display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;border-bottom:1px solid #f0ede7;background:#fdfaf3;border-radius:var(--qs-radius) var(--qs-radius) 0 0}
+.qs-form-header i{font-size:1.4rem;color:var(--qs-yellow-dark)}
+.qs-form-section{font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.4px;color:var(--qs-dark);display:flex;align-items:center;gap:.4rem;margin:1.1rem 0 .6rem;padding-bottom:.35rem;border-bottom:2px solid #f7ecd3}
+.qs-form-section:first-of-type{margin-top:0}
+.qs-form-section i{color:var(--qs-yellow-dark)}
 
 /* Menú de accesos (dashboards Welcome) */
 .qs-menu-card{background:#fff;border-radius:var(--qs-radius);box-shadow:0 1px 6px rgba(0,0,0,.08);border:1px solid #eee;text-decoration:none;color:var(--qs-text);display:block;transition:box-shadow .15s,transform .15s}
 .qs-menu-card:hover{box-shadow:0 8px 20px rgba(0,0,0,.14);transform:translateY(-2px);color:var(--qs-text)}
 .qs-menu-icon{width:48px;height:48px;border-radius:50%;background:var(--qs-yellow);color:var(--qs-dark);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.qs-menu-card{padding:1.5rem !important;display:flex !important;flex-direction:column;height:100%}
+.qs-menu-card .text-muted{font-size:.8rem}
+.qs-menu-cta{margin-top:1rem;display:inline-flex;align-items:center;gap:.35rem;font-weight:700;font-size:.82rem;color:var(--qs-dark);background:rgba(243,183,53,.18);padding:.4rem .8rem;border-radius:30px;align-self:flex-start}
+.qs-menu-card:hover .qs-menu-cta{background:var(--qs-yellow);color:var(--qs-dark)}
+
+/* Banner de bienvenida para paneles internos (Admin/Empleado/Repartidor) */
+.qs-welcome-hero{background:linear-gradient(120deg,var(--qs-dark) 0%,#6b4a22 100%);color:#fff;padding:1.8rem 1.75rem;border-radius:var(--qs-radius);margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.qs-welcome-hero h4{font-weight:800;margin:0 0 .2rem}
+.qs-welcome-hero p{margin:0;color:#f0e2c9;font-size:.9rem}
+.qs-welcome-hero .qs-role-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:var(--qs-yellow);font-weight:700;font-size:.75rem;padding:.35rem .8rem;border-radius:30px;text-transform:uppercase;letter-spacing:.4px}
+.qs-welcome-date{color:#e8d9bd;font-size:.8rem;text-align:right}
+
+/* Tarjeta de tip/ayuda para no dejar el panel vacío */
+.qs-tip-card{background:#fff;border:1px solid #eee;border-radius:var(--qs-radius);box-shadow:0 1px 6px rgba(0,0,0,.06);padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start}
+.qs-tip-card .qs-tip-icon{width:42px;height:42px;min-width:42px;border-radius:50%;background:rgba(243,183,53,.18);color:var(--qs-yellow-dark);display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.qs-tip-card h6{font-weight:700;margin-bottom:.2rem;color:var(--qs-text)}
+.qs-tip-card p{margin:0;color:var(--qs-muted);font-size:.85rem}
+
+/* Tablas responsivas: en pantallas pequeñas se convierten en tarjetas apiladas (sin scroll horizontal) */
+@media (max-width: 767.98px){
+  .qs-table-stack{border:none}
+  .qs-table-stack thead{display:none}
+  .qs-table-stack,.qs-table-stack tbody,.qs-table-stack tr,.qs-table-stack td{display:block;width:100%}
+  .qs-table-stack tr{margin-bottom:1rem;border:1px solid #eee;border-radius:var(--qs-radius);box-shadow:0 1px 6px rgba(0,0,0,.07);padding:.6rem .9rem;background:#fff}
+  .qs-table-stack td{border:none !important;padding:.4rem 0;display:flex;justify-content:space-between;align-items:center;gap:.75rem;text-align:right}
+  .qs-table-stack td::before{content:attr(data-label);font-weight:700;color:var(--qs-muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;text-align:left;flex-shrink:0}
+  .qs-table-stack td.qs-td-plain::before{content:none}
+  .qs-table-stack td.qs-td-actions{justify-content:flex-end;flex-wrap:wrap;padding-top:.6rem;border-top:1px solid #f1f1f1 !important;margin-top:.3rem}
+  .qs-table-stack td.qs-td-actions::before{content:none}
+}

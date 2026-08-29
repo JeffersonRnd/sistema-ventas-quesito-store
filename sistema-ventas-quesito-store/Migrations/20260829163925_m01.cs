@@ -8,31 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace sistema_ventas_quesito_store.Migrations
 {
     /// <inheritdoc />
-    public partial class m2 : Migration
+    public partial class m01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Carritos",
-                columns: table => new
-                {
-                    IdCarrito = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carritos", x => x.IdCarrito);
-                    table.ForeignKey(
-                        name: "FK_Carritos_Usuarios_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "Usuarios",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Categorias",
                 columns: table => new
@@ -46,6 +26,19 @@ namespace sistema_ventas_quesito_store.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categorias", x => x.IdCategoria);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    IdRol = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreRol = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.IdRol);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,7 +63,7 @@ namespace sistema_ventas_quesito_store.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    Talla = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Talla = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Color = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
@@ -86,6 +79,51 @@ namespace sistema_ventas_quesito_store.Migrations
                         column: x => x.IdCategoria,
                         principalTable: "Categorias",
                         principalColumn: "IdCategoria",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Usuarios",
+                columns: table => new
+                {
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreCompleto = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DNI = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Celular = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Correo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Contrasena = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IdRol = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuarios", x => x.IdUsuario);
+                    table.ForeignKey(
+                        name: "FK_Usuarios_Roles_IdRol",
+                        column: x => x.IdRol,
+                        principalTable: "Roles",
+                        principalColumn: "IdRol",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carritos",
+                columns: table => new
+                {
+                    IdCarrito = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carritos", x => x.IdCarrito);
+                    table.ForeignKey(
+                        name: "FK_Carritos_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -127,6 +165,7 @@ namespace sistema_ventas_quesito_store.Migrations
                     IdCarritoDetalle = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Cantidad = table.Column<int>(type: "int", nullable: false),
+                    TallaSeleccionada = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     IdCarrito = table.Column<int>(type: "int", nullable: false),
                     IdProducto = table.Column<int>(type: "int", nullable: false)
                 },
@@ -154,6 +193,7 @@ namespace sistema_ventas_quesito_store.Migrations
                     IdDetallePedido = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Cantidad = table.Column<int>(type: "int", nullable: false),
+                    TallaSeleccionada = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     IdPedido = table.Column<int>(type: "int", nullable: false),
                     IdProducto = table.Column<int>(type: "int", nullable: false)
@@ -213,7 +253,7 @@ namespace sistema_ventas_quesito_store.Migrations
                 {
                     IdEstadoEntrega = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Estado = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Observacion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     FechaHora = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdEntrega = table.Column<int>(type: "int", nullable: false)
@@ -242,6 +282,17 @@ namespace sistema_ventas_quesito_store.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "IdRol", "NombreRol" },
+                values: new object[,]
+                {
+                    { 1, "Administrador" },
+                    { 2, "Empleado" },
+                    { 3, "Repartidor" },
+                    { 4, "Cliente" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "TiposEntrega",
                 columns: new[] { "IdTipoEntrega", "Descripcion", "Nombre" },
                 values: new object[,]
@@ -249,6 +300,17 @@ namespace sistema_ventas_quesito_store.Migrations
                     { 1, "El cliente recoge en la tienda de Cajamarca", "Recojo en tienda" },
                     { 2, "Entrega en dirección del cliente dentro de Cajamarca", "Envío a domicilio" },
                     { 3, "Envío nacional mediante empresa de transporte", "Envío a otra ciudad" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Usuarios",
+                columns: new[] { "IdUsuario", "Celular", "Contrasena", "Correo", "DNI", "Direccion", "IdRol", "NombreCompleto" },
+                values: new object[,]
+                {
+                    { 1, "999999999", "admin123", "admin@quesitostore.com", "00000000", "Cajamarca", 1, "Administrador" },
+                    { 2, "999999998", "empleado123", "empleado@quesitostore.com", "00000001", "Cajamarca", 2, "Empleado" },
+                    { 3, "999999997", "repartidor123", "repartidor@quesitostore.com", "00000002", "Cajamarca", 3, "Repartidor" },
+                    { 4, "999999996", "cliente123", "cliente@quesitostore.com", "00000003", "Cajamarca", 4, "Cliente" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -307,6 +369,11 @@ namespace sistema_ventas_quesito_store.Migrations
                 name: "IX_Productos_IdCategoria",
                 table: "Productos",
                 column: "IdCategoria");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_IdRol",
+                table: "Usuarios",
+                column: "IdRol");
         }
 
         /// <inheritdoc />
@@ -338,6 +405,12 @@ namespace sistema_ventas_quesito_store.Migrations
 
             migrationBuilder.DropTable(
                 name: "TiposEntrega");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

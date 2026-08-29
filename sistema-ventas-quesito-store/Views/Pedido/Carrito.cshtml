@@ -39,33 +39,33 @@
         else
         {
             <div class="qs-panel p-0 mb-3 overflow-hidden">
-                <table class="table mb-0 align-middle">
+                <table class="table mb-0 align-middle qs-table-stack">
                     <thead style="background:#fafbfc"><tr><th>Producto</th><th>Talla</th><th>Precio</th><th style="width:140px">Cant.</th><th>Subtotal</th><th></th></tr></thead>
                     <tbody>
                         @foreach (var d in Model.Detalles)
                         {
                             <tr>
-                                <td class="fw-semibold">@d.Producto?.Nombre</td>
-                                <td>
+                                <td data-label="Producto" class="fw-semibold">@d.Producto?.Nombre</td>
+                                <td data-label="Talla">
                                     @if (!string.IsNullOrEmpty(d.TallaSeleccionada))
                                     {
                                         <span class="badge bg-dark">@d.TallaSeleccionada</span>
                                     }
                                     else { <span class="text-muted">—</span> }
                                 </td>
-                                <td>S/ @d.Producto?.Precio.ToString("0.00")</td>
-                                <td>
-                                    <form asp-action="ActualizarCantidadCarrito" method="post" class="d-flex gap-1">
+                                <td data-label="Precio">S/ @d.Producto?.Precio.ToString("0.00")</td>
+                                <td data-label="Cantidad">
+                                    <form asp-action="ActualizarCantidadCarrito" method="post" class="d-flex gap-1 justify-content-end">
                                         <input type="hidden" name="idDetalle" value="@d.IdCarritoDetalle" />
                                         <input type="number" name="cantidad" value="@d.Cantidad" min="1" class="form-control form-control-sm" style="width:65px" />
-                                        <button class="btn btn-qs-outline btn-sm" title="Actualizar"><i class="bi bi-check-lg"></i></button>
+                                        <button class="btn btn-qs-outline btn-sm" title="Actualizar cantidad"><i class="bi bi-check-lg"></i></button>
                                     </form>
                                 </td>
-                                <td class="qs-price">S/ @((d.Producto!.Precio * d.Cantidad).ToString("0.00"))</td>
-                                <td>
+                                <td data-label="Subtotal" class="qs-price">S/ @((d.Producto!.Precio * d.Cantidad).ToString("0.00"))</td>
+                                <td data-label="Quitar" class="qs-td-actions">
                                     <form asp-action="EliminarDelCarrito" method="post" onsubmit="return confirm('¿Eliminar este producto del carrito?');">
                                         <input type="hidden" name="idDetalle" value="@d.IdCarritoDetalle" />
-                                        <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i></button>
+                                        <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3 me-1"></i>Quitar</button>
                                     </form>
                                 </td>
                             </tr>
@@ -109,5 +109,8 @@
             </script>
         }
     </div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
 </body>
 </html>

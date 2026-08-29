@@ -24,7 +24,7 @@
   </div>
   <div class="card">
     <div class="card-body p-0">
-      <table class="table table-hover mb-0">
+      <table class="table table-hover mb-0 qs-table-stack">
         <thead class="table-dark"><tr>
           <th class="ps-3">#</th><th>Cliente</th><th>Entrega</th><th>Total</th>
           <th>Estado</th><th>Pago</th><th>Fecha</th><th class="pe-3">Acciones</th>
@@ -32,23 +32,23 @@
         <tbody>
         @foreach(var p in Model){
           <tr>
-            <td class="ps-3 fw-bold">#@p.IdPedido</td>
-            <td>@p.Cliente?.NombreCompleto</td>
-            <td><span class="badge bg-light text-dark border">@p.TipoEntrega?.Nombre</span></td>
-            <td class="fw-semibold">S/ @p.Total.ToString("0.00")</td>
-            <td>
+            <td data-label="Pedido" class="ps-3 fw-bold">#@p.IdPedido</td>
+            <td data-label="Cliente">@p.Cliente?.NombreCompleto</td>
+            <td data-label="Entrega"><span class="badge bg-light text-dark border">@p.TipoEntrega?.Nombre</span></td>
+            <td data-label="Total" class="fw-semibold">S/ @p.Total.ToString("0.00")</td>
+            <td data-label="Estado">
               @{var sc = p.EstadoPedido switch{"Pendiente"=>"bg-warning text-dark","Aprobado"=>"bg-info text-dark","Empacando"=>"bg-primary","Empacado y listo"=>"bg-success","En despacho"=>"bg-primary","Finalizado"=>"bg-success","Cancelado"=>"bg-danger",_=>"bg-secondary"};}
               <span class="badge @sc">@p.EstadoPedido</span>
             </td>
-            <td><span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></td>
-            <td class="text-muted small">@p.FechaPedido.ToString("dd/MM/yy HH:mm")</td>
-            <td class="pe-3">
+            <td data-label="Pago"><span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></td>
+            <td data-label="Fecha" class="text-muted small">@p.FechaPedido.ToString("dd/MM/yy HH:mm")</td>
+            <td data-label="Acciones" class="pe-3 qs-td-actions">
               @if(p.EstadoPedido=="Pendiente"){
                 <form asp-action="Aprobar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
-                  <button class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i></button>
+                  <button class="btn btn-success btn-sm" title="Aprobar pedido"><i class="bi bi-check-lg"></i></button>
                 </form>
                 <form asp-action="Cancelar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
-                  <button class="btn btn-danger btn-sm"><i class="bi bi-x-lg"></i></button>
+                  <button class="btn btn-danger btn-sm" title="Cancelar pedido"><i class="bi bi-x-lg"></i></button>
                 </form>
               }
               @if(p.EstadoPago=="Pendiente" && p.EstadoPedido!="Cancelado"){
@@ -63,5 +63,14 @@
       </table>
     </div>
   </div>
+  @if(!Model.Any()){
+    <div class="qs-tip-card mt-3">
+      <div class="qs-tip-icon"><i class="bi bi-inbox"></i></div>
+      <div><h6>Sin pedidos aún</h6><p>Aquí aparecerán los pedidos que hagan los clientes.</p></div>
+    </div>
+  }
 </div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
 </body></html>

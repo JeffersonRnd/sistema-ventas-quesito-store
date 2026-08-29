@@ -12,8 +12,8 @@ using sistema_ventas_quesito_store.Data;
 namespace sistema_ventas_quesito_store.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260624174707_m3")]
-    partial class m3
+    [Migration("20260829163925_m01")]
+    partial class m01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,10 @@ namespace sistema_ventas_quesito_store.Migrations
 
                     b.Property<int>("IdProducto")
                         .HasColumnType("int");
+
+                    b.Property<string>("TallaSeleccionada")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("IdCarritoDetalle");
 
@@ -154,6 +158,10 @@ namespace sistema_ventas_quesito_store.Migrations
 
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("TallaSeleccionada")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("IdDetallePedido");
 
@@ -322,8 +330,9 @@ namespace sistema_ventas_quesito_store.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Talla")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("IdProducto");
 
@@ -465,12 +474,45 @@ namespace sistema_ventas_quesito_store.Migrations
                         {
                             IdUsuario = 1,
                             Celular = "999999999",
-                            Contrasena = "Admin123",
+                            Contrasena = "admin123",
                             Correo = "admin@quesitostore.com",
                             DNI = "00000000",
                             Direccion = "Cajamarca",
                             IdRol = 1,
                             NombreCompleto = "Administrador"
+                        },
+                        new
+                        {
+                            IdUsuario = 2,
+                            Celular = "999999998",
+                            Contrasena = "empleado123",
+                            Correo = "empleado@quesitostore.com",
+                            DNI = "00000001",
+                            Direccion = "Cajamarca",
+                            IdRol = 2,
+                            NombreCompleto = "Empleado"
+                        },
+                        new
+                        {
+                            IdUsuario = 3,
+                            Celular = "999999997",
+                            Contrasena = "repartidor123",
+                            Correo = "repartidor@quesitostore.com",
+                            DNI = "00000002",
+                            Direccion = "Cajamarca",
+                            IdRol = 3,
+                            NombreCompleto = "Repartidor"
+                        },
+                        new
+                        {
+                            IdUsuario = 4,
+                            Celular = "999999996",
+                            Contrasena = "cliente123",
+                            Correo = "cliente@quesitostore.com",
+                            DNI = "00000003",
+                            Direccion = "Cajamarca",
+                            IdRol = 4,
+                            NombreCompleto = "Cliente"
                         });
                 });
 
