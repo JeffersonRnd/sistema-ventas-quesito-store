@@ -2,9 +2,9 @@ ADMINISTRADOR
 admin@quesitostore.com
 admin123
 
-EMPLEADO
-empleado@quesitostore.com
-empleado123
+EMPAQUETADOR
+empaquetador@quesitostore.com
+empaquetador123
 
 REPARTIDOR
 repartidor@quesitostore.com
@@ -13,5 +13,6 @@ repartidor123
 CLIENTE
 cliente@quesitostore.com
 cliente123
+
 
 

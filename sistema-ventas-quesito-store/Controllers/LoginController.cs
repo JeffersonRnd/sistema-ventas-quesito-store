@@ -42,7 +42,7 @@ namespace sistema_ventas_quesito_store.Controllers
             return usuario.Rol!.NombreRol switch
             {
                 "Administrador" => RedirectToAction("Administrador", "Welcome"),
-                "Empleado" => RedirectToAction("Empleado", "Welcome"),
+                "Empaquetador" => RedirectToAction("Empaquetador", "Welcome"),
                 "Repartidor" => RedirectToAction("Repartidor", "Welcome"),
                 "Cliente" => RedirectToAction("Cliente", "Welcome"),
                 _ => RedirectToAction("Index", "Home")

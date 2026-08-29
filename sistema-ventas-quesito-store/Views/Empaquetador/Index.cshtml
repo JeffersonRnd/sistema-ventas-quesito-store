@@ -1,0 +1,70 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Pedido>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Panel Empaquetador — Quesito Store</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="~/css/store.css"/>
+<style>
+  body{background:var(--qs-bg)}.card{border:none;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+</style>
+</head>
+<body>
+<nav class="qs-nav">
+  <a class="qs-brand" href="#">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Panel Empaquetador</small></a>
+  <div class="d-flex gap-2">
+    <a asp-controller="Welcome" asp-action="Empaquetador" class="btn btn-qs-nav btn-sm"><i class="bi bi-house me-1"></i>Panel</a>
+    <a asp-action="Historial" class="btn btn-qs-nav btn-sm"><i class="bi bi-clock-history me-1"></i>Historial</a>
+    <a asp-controller="Login" asp-action="Salir" class="btn btn-qs-danger btn-sm">Salir</a>
+    
+  </div>
+</nav>
+<div class="container-fluid px-4 mt-4">
+  <div class="d-flex align-items-center mb-3 gap-2">
+    <i class="bi bi-box-seam fs-4" style="color:var(--qs-dark)"></i>
+    <span class="fw-bold fs-5">Pedidos Pendientes de Empaque</span>
+  </div>
+  @foreach(var p in Model){
+    <div class="card mb-3">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+        <span class="fw-bold">Pedido #@p.IdPedido</span>
+        <span class="badge @(p.EstadoPedido=="Aprobado"?"bg-warning text-dark":"bg-info text-dark")">@p.EstadoPedido</span>
+      </div>
+      <div class="card-body py-2">
+        <div class="row">
+          <div class="col-md-8">
+            <p class="mb-1 small"><i class="bi bi-person me-1 text-muted"></i><b>@p.Cliente?.NombreCompleto</b> &nbsp;|&nbsp; <i class="bi bi-truck me-1 text-muted"></i>@p.TipoEntrega?.Nombre</p>
+            <p class="mb-1 small text-muted"><i class="bi bi-calendar3 me-1"></i>@p.FechaPedido.ToString("dd/MM/yyyy HH:mm")</p>
+            <ul class="mb-0 small mt-2">
+              @foreach(var d in p.Detalles){
+                <li><b>@d.Producto?.Nombre</b> x@d.Cantidad — S/ @((d.Producto!.Precio*d.Cantidad).ToString("0.00"))</li>
+              }
+            </ul>
+          </div>
+          <div class="col-md-4 d-flex align-items-center justify-content-end gap-2 mt-2 mt-md-0">
+            @if(p.EstadoPedido=="Aprobado"){
+              <form asp-action="MarcarEmpacando" asp-route-id="@p.IdPedido" method="post">
+                <button class="btn btn-qs btn-sm"><i class="bi bi-box me-1"></i>Iniciar Empaque</button>
+              </form>
+            }
+            @if(p.EstadoPedido=="Empacando"){
+              <form asp-action="MarcarListo" asp-route-id="@p.IdPedido" method="post">
+                <button class="btn btn-success btn-sm"><i class="bi bi-check2-circle me-1"></i>Marcar Listo</button>
+              </form>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @if(!Model.Any()){
+    <div class="card p-4 text-center text-muted">
+      <i class="bi bi-inbox fs-1 mb-2"></i><p class="mb-0">No hay pedidos pendientes de empaque.</p>
+    </div>
+  }
+</div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
+</body></html>

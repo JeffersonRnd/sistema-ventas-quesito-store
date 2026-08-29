@@ -1,0 +1,58 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Usuario>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Personal — Admin</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="~/css/store.css"/>
+<style>
+  body { background:var(--qs-bg); }
+  th { font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; }
+</style>
+</head>
+<body>
+<div class="qs-nav">
+  <span class="qs-brand">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Personal</small></span>
+  <div class="d-flex gap-2">
+    <a asp-action="Crear" class="btn btn-qs btn-sm"><i class="bi bi-person-plus me-1"></i>Nuevo</a>
+    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-qs-nav btn-sm"><i class="bi bi-arrow-left me-1"></i>Panel</a>
+  </div>
+</div>
+<div class="container-fluid mt-4 px-4">
+  <table class="table table-bordered bg-white shadow-sm small qs-table-stack">
+    <thead class="table-dark">
+      <tr><th>Nombre</th><th>Rol</th><th>DNI</th><th>Celular</th><th>Correo</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+    @foreach (var u in Model)
+    {
+      <tr>
+        <td data-label="Nombre">@u.NombreCompleto</td>
+        <td data-label="Rol">
+          @if (u.Rol!.NombreRol == "Repartidor")
+          {
+            <span class="badge bg-warning text-dark"><i class="bi bi-truck me-1"></i>Repartidor</span>
+          }
+          else
+          {
+            <span class="badge bg-info text-dark"><i class="bi bi-box-seam me-1"></i>Empaquetador</span>
+          }
+        </td>
+        <td data-label="DNI">@u.DNI</td>
+        <td data-label="Celular">@u.Celular</td>
+        <td data-label="Correo">@u.Correo</td>
+        <td data-label="Acciones">
+          <a asp-action="Editar" asp-route-id="@u.IdUsuario" class="btn btn-qs-outline btn-sm"><i class="bi bi-pencil-square"></i></a>
+        </td>
+      </tr>
+    }
+    @if (!Model.Any())
+    {
+      <tr><td colspan="6" class="text-center text-muted py-4">Aún no registras repartidores ni empaquetadores.</td></tr>
+    }
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

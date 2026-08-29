@@ -18,5 +18,6 @@ namespace sistema_ventas_quesito_store.Models
 
         // Navegación
         public ICollection<Producto> Productos { get; set; } = new List<Producto>();
+        public ICollection<CategoriaTalla> CategoriaTallas { get; set; } = new List<CategoriaTalla>();
     }
 }

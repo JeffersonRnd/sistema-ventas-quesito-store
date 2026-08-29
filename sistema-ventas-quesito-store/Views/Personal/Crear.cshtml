@@ -1,0 +1,70 @@
+@model sistema_ventas_quesito_store.Models.Usuario
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Nuevo Personal — Admin</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="~/css/store.css"/>
+<style> body { background: var(--qs-bg); } </style>
+</head>
+<body>
+<div class="container my-4" style="max-width:600px">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <a asp-action="Index" class="btn btn-qs-outline btn-sm" title="Volver al listado"><i class="bi bi-arrow-left"></i></a>
+    <h5 class="fw-bold mb-0"><i class="bi bi-person-plus-fill me-2" style="color:var(--qs-dark)"></i>Nuevo Personal</h5>
+  </div>
+  <div class="qs-form-panel">
+    <div class="card-body p-3 p-md-4">
+      @if (!ViewData.ModelState.IsValid)
+      {
+        <div class="alert alert-danger py-2 small">
+          @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+          {
+            <div>@e.ErrorMessage</div>
+          }
+        </div>
+      }
+      <form asp-action="Crear" method="post">
+        <div class="mb-3">
+          <label asp-for="NombreCompleto" class="form-label fw-semibold">Nombre completo</label>
+          <input asp-for="NombreCompleto" class="form-control" />
+        </div>
+        <div class="row g-3 mb-2">
+          <div class="col-12 col-sm-6">
+            <label asp-for="DNI" class="form-label fw-semibold">DNI</label>
+            <input asp-for="DNI" class="form-control" />
+          </div>
+          <div class="col-12 col-sm-6">
+            <label asp-for="Celular" class="form-label fw-semibold">Celular</label>
+            <input asp-for="Celular" class="form-control" />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label asp-for="Direccion" class="form-label fw-semibold">Dirección</label>
+          <input asp-for="Direccion" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label asp-for="Correo" class="form-label fw-semibold">Correo</label>
+          <input asp-for="Correo" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label asp-for="Contrasena" class="form-label fw-semibold">Contraseña</label>
+          <input asp-for="Contrasena" type="password" class="form-control" />
+        </div>
+        <div class="mb-4">
+          <label asp-for="IdRol" class="form-label fw-semibold">Rol</label>
+          <select asp-for="IdRol" asp-items="ViewBag.Roles" class="form-select">
+            <option value="">-- Selecciona un rol --</option>
+          </select>
+        </div>
+        <div class="d-flex flex-column flex-sm-row gap-2">
+          <button type="submit" class="btn btn-qs-primary fw-bold"><i class="bi bi-check-circle me-1"></i>Registrar</button>
+          <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i>Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

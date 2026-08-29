@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/store.css" />
+    <script src="~/js/site.js"></script>
 </head>
 <body class="qs-body">
     <header class="qs-header">
@@ -90,20 +91,57 @@
                         <label class="fw-semibold form-label">Dirección de entrega</label>
                         <input type="text" name="direccionDestino" id="direccionDestino" class="form-control" placeholder="Dirección completa" />
                     </div>
-                    <button class="btn btn-qs-primary w-100 py-2"><i class="bi bi-check-circle me-1"></i>Confirmar pedido</button>
+
+                    <p class="qs-form-section mt-4"><i class="bi bi-credit-card-fill"></i>Pago con tarjeta</p>
+                    <div class="form-text mb-2"><i class="bi bi-shield-lock me-1"></i>Pago simulado: no se procesa ningún cobro real ni se guarda tu número completo.</div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Nombre del titular</label>
+                            <input type="text" id="titularTarjeta" name="titularTarjeta" class="form-control" placeholder="Como aparece en la tarjeta" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Número de tarjeta</label>
+                            <input type="text" id="numeroTarjeta" name="numeroTarjeta" class="form-control" placeholder="0000 0000 0000 0000" inputmode="numeric" maxlength="19" oninput="formatearTarjeta(this)" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Vencimiento</label>
+                            <input type="text" id="vencimientoTarjeta" name="vencimientoTarjeta" class="form-control" placeholder="MM/AA" maxlength="5" oninput="formatearVencimiento(this)" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">CVV</label>
+                            <input type="text" id="cvvTarjeta" name="cvvTarjeta" class="form-control" placeholder="123" inputmode="numeric" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')" />
+                        </div>
+                    </div>
+
+                    <button class="btn btn-qs-primary w-100 py-2 mt-3"><i class="bi bi-check-circle me-1"></i>Pagar y confirmar pedido</button>
                 </form>
             </div>
             <script>
                         function toggleDireccion(sel) {
                             document.getElementById('divDireccion').style.display = sel.value > 1 ? 'block' : 'none';
                         }
+                        function formatearTarjeta(input) {
+                            input.value = input.value.replace(/\D/g, '').slice(0, 19).replace(/(.{4})/g, '$1 ').trim();
+                        }
+                        function formatearVencimiento(input) {
+                            let v = input.value.replace(/\D/g, '').slice(0, 4);
+                            input.value = v.length > 2 ? v.slice(0, 2) + '/' + v.slice(2) : v;
+                        }
                         function validarPedido() {
                             var tipo = document.getElementById('tipoEntrega').value;
-                            if (!tipo) { alert('Por favor seleccione el tipo de entrega.'); return false; }
+                            if (!tipo) { qsToast('Por favor seleccione el tipo de entrega.', 'error'); return false; }
                             if (tipo > 1) {
                                 var dir = document.getElementById('direccionDestino').value.trim();
-                                if (!dir) { alert('Por favor ingrese la dirección de entrega.'); return false; }
+                                if (!dir) { qsToast('Por favor ingrese la dirección de entrega.', 'error'); return false; }
                             }
+                            var titular = document.getElementById('titularTarjeta').value.trim();
+                            var numero = document.getElementById('numeroTarjeta').value.replace(/\s/g, '');
+                            var venc = document.getElementById('vencimientoTarjeta').value.trim();
+                            var cvv = document.getElementById('cvvTarjeta').value.trim();
+                            if (!titular) { qsToast('Ingresa el nombre del titular de la tarjeta.', 'error'); return false; }
+                            if (numero.length < 13 || numero.length > 19) { qsToast('Ingresa un número de tarjeta válido.', 'error'); return false; }
+                            if (!/^\d{2}\/\d{2}$/.test(venc)) { qsToast('Ingresa el vencimiento en formato MM/AA.', 'error'); return false; }
+                            if (cvv.length < 3 || cvv.length > 4) { qsToast('Ingresa un CVV válido.', 'error'); return false; }
                             return true;
                         }
             </script>

@@ -1,0 +1,74 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Categoria>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Categorías — Admin</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="~/css/store.css"/>
+<style>
+  body { background:var(--qs-bg); }
+  th { font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; }
+  .talla-badge { font-size:.72rem; }
+</style>
+</head>
+<body>
+<div class="qs-nav">
+  <span class="qs-brand">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Categorías</small></span>
+  <div class="d-flex gap-2">
+    <a asp-action="Crear" class="btn btn-qs btn-sm"><i class="bi bi-plus-lg me-1"></i>Nueva Categoría</a>
+    <a asp-controller="Welcome" asp-action="Administrador" class="btn btn-qs-nav btn-sm"><i class="bi bi-arrow-left me-1"></i>Panel</a>
+  </div>
+</div>
+<div class="container-fluid mt-4 px-4">
+  @if (TempData["Error"] != null)
+  {
+    <div class="alert alert-danger small">@TempData["Error"]</div>
+  }
+  <table class="table table-bordered bg-white shadow-sm small qs-table-stack">
+    <thead class="table-dark">
+      <tr><th>Nombre</th><th>Descripción</th><th>Tallas habilitadas</th><th>Productos</th><th>Estado</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model)
+    {
+      <tr class="@(c.Activo ? "" : "opacity-50")">
+        <td data-label="Nombre" class="fw-semibold">@c.NombreCategoria</td>
+        <td data-label="Descripción">@c.Descripcion</td>
+        <td data-label="Tallas">
+          @if (c.CategoriaTallas.Count == 0)
+          {
+            <span class="text-muted">Sin tallas asignadas</span>
+          }
+          else
+          {
+            foreach (var ct in c.CategoriaTallas.OrderBy(x => x.Talla!.Orden))
+            {
+              <span class="badge bg-secondary me-1 mb-1 talla-badge">@ct.Talla!.Nombre</span>
+            }
+          }
+        </td>
+        <td data-label="Productos">@c.Productos.Count</td>
+        <td data-label="Estado"><span class="badge @(c.Activo ? "bg-success" : "bg-secondary")">@(c.Activo ? "Activo" : "Inactivo")</span></td>
+        <td data-label="Acciones" class="qs-td-actions">
+          <a asp-action="Editar" asp-route-id="@c.IdCategoria" class="btn btn-warning btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
+          <form asp-action="Desactivar" asp-route-id="@c.IdCategoria" method="post" style="display:inline">
+            <button class="btn btn-sm @(c.Activo ? "btn-outline-secondary" : "btn-outline-success")" title="@(c.Activo ? "Desactivar" : "Activar")">
+              <i class="bi @(c.Activo ? "bi-eye-slash" : "bi-eye")"></i>
+            </button>
+          </form>
+          <form asp-action="Eliminar" asp-route-id="@c.IdCategoria" method="post" style="display:inline"
+                onsubmit="return confirm('¿Eliminar esta categoría? Solo es posible si no tiene productos asociados.')">
+            <button class="btn btn-danger btn-sm" title="Eliminar"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
+</body>
+</html>

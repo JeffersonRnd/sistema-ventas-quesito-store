@@ -1,11 +1,11 @@
 @{ Layout = null; var nombre = ViewBag.Nombre as string; }
-<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Repartidor — Quesito Store</title>
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Empaquetador — Quesito Store</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
 <link rel="stylesheet" href="~/css/store.css"/>
 </head><body class="qs-body-alt">
 <nav class="qs-nav">
-  <a class="qs-brand" href="#">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Panel Repartidor</small></a>
+  <a class="qs-brand" href="#">QUESITO<span>STORE</span> <small class="fw-normal ms-2" style="font-size:.8rem;letter-spacing:0">Panel Empaquetador</small></a>
   <div class="d-flex align-items-center gap-3">
     <span class="small text-white-50"><i class="bi bi-person-circle me-1"></i>@nombre</span>
     <a asp-controller="Login" asp-action="Salir" class="btn btn-qs-danger btn-sm"><i class="bi bi-box-arrow-right me-1"></i>Salir</a>
@@ -14,9 +14,9 @@
 <div class="container mt-4">
   <div class="qs-welcome-hero">
     <div>
-      <span class="qs-role-badge"><i class="bi bi-truck me-1"></i>Repartidor</span>
-      <h4 class="mt-2"><i class="bi bi-geo-alt me-2" style="color:var(--qs-yellow)"></i>Bienvenido/a, @nombre</h4>
-      <p>Revisa tus entregas pendientes y actualiza el estado de cada una.</p>
+      <span class="qs-role-badge"><i class="bi bi-box-seam me-1"></i>Empaquetador</span>
+      <h4 class="mt-2"><i class="bi bi-clipboard-check me-2" style="color:var(--qs-yellow)"></i>Bienvenido/a, @nombre</h4>
+      <p>Organiza el empaque de pedidos y lleva el control de lo ya preparado.</p>
     </div>
     <div class="qs-welcome-date">
       <div><i class="bi bi-calendar-event me-1"></i><span id="qsFecha"></span></div>
@@ -27,22 +27,22 @@
   <p class="qs-section-title"><i class="bi bi-lightning-charge-fill" style="color:var(--qs-yellow-dark)"></i>Accesos rápidos</p>
   <div class="row g-3 mb-4">
     <div class="col-6 col-md-4">
-      <a asp-controller="Repartidor" asp-action="Index" class="qs-menu-card p-4">
-        @if ((int)(ViewBag.EntregasPendientes ?? 0) > 0)
+      <a asp-controller="Empaquetador" asp-action="Index" class="qs-menu-card p-4">
+        @if ((int)(ViewBag.PedidosPorEmpacar ?? 0) > 0)
         {
-          <span class="qs-badge-count">+@ViewBag.EntregasPendientes</span>
+          <span class="qs-badge-count">+@ViewBag.PedidosPorEmpacar</span>
         }
-        <div class="qs-menu-icon mb-3"><i class="bi bi-truck"></i></div>
-        <div class="fw-bold">Entregas</div>
-        <div class="text-muted small mt-1">Pendientes hoy</div>
+        <div class="qs-menu-icon mb-3"><i class="bi bi-box-seam"></i></div>
+        <div class="fw-bold">Empaque</div>
+        <div class="text-muted small mt-1">Pedidos pendientes</div>
       <span class="qs-menu-cta">Ver pendientes<i class="bi bi-arrow-right"></i></span>
       </a>
     </div>
     <div class="col-6 col-md-4">
-      <a asp-controller="Repartidor" asp-action="Historial" class="qs-menu-card p-4">
+      <a asp-controller="Empaquetador" asp-action="Historial" class="qs-menu-card p-4">
         <div class="qs-menu-icon mb-3"><i class="bi bi-clock-history"></i></div>
         <div class="fw-bold">Historial</div>
-        <div class="text-muted small mt-1">Entregas realizadas</div>
+        <div class="text-muted small mt-1">Pedidos empacados</div>
       <span class="qs-menu-cta">Ver historial<i class="bi bi-arrow-right"></i></span>
       </a>
     </div>
@@ -52,7 +52,7 @@
     <div class="qs-tip-icon"><i class="bi bi-info-circle"></i></div>
     <div>
       <h6>Recordatorio</h6>
-      <p>Actualiza el estado de cada entrega apenas la recojas y cuando la completes, así el cliente y el equipo tienen visibilidad en tiempo real.</p>
+      <p>Marca cada pedido como "Empacando" y luego "Listo" para que el repartidor pueda recogerlo sin demoras.</p>
     </div>
   </div>
 </div>

@@ -12,8 +12,8 @@ using sistema_ventas_quesito_store.Data;
 namespace sistema_ventas_quesito_store.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260829163925_m01")]
-    partial class m01
+    [Migration("20260829201101_m001")]
+    partial class m001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,6 +139,213 @@ namespace sistema_ventas_quesito_store.Migrations
                         });
                 });
 
+            modelBuilder.Entity("sistema_ventas_quesito_store.Models.CategoriaTalla", b =>
+                {
+                    b.Property<int>("IdCategoria")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTalla")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCategoria", "IdTalla");
+
+                    b.HasIndex("IdTalla");
+
+                    b.ToTable("CategoriaTallas");
+
+                    b.HasData(
+                        new
+                        {
+                            IdCategoria = 1,
+                            IdTalla = 1
+                        },
+                        new
+                        {
+                            IdCategoria = 1,
+                            IdTalla = 2
+                        },
+                        new
+                        {
+                            IdCategoria = 1,
+                            IdTalla = 3
+                        },
+                        new
+                        {
+                            IdCategoria = 1,
+                            IdTalla = 4
+                        },
+                        new
+                        {
+                            IdCategoria = 1,
+                            IdTalla = 5
+                        },
+                        new
+                        {
+                            IdCategoria = 1,
+                            IdTalla = 6
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 7
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 8
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 9
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 10
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 11
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 12
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 13
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 14
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 15
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            IdTalla = 16
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            IdTalla = 17
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            IdTalla = 18
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            IdTalla = 19
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            IdTalla = 20
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            IdTalla = 21
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            IdTalla = 22
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            IdTalla = 17
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            IdTalla = 18
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            IdTalla = 19
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            IdTalla = 20
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            IdTalla = 21
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            IdTalla = 22
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 23
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 24
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 25
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 26
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 27
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 28
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 29
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 30
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 31
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            IdTalla = 32
+                        });
+                });
+
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.DetallePedido", b =>
                 {
                     b.Property<int>("IdDetallePedido")
@@ -247,6 +454,56 @@ namespace sistema_ventas_quesito_store.Migrations
                     b.HasIndex("IdEntrega");
 
                     b.ToTable("EstadosEntrega");
+                });
+
+            modelBuilder.Entity("sistema_ventas_quesito_store.Models.Pago", b =>
+                {
+                    b.Property<int>("IdPago")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPago"));
+
+                    b.Property<string>("EstadoPago")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("FechaPago")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdPedido")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MetodoPago")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("TarjetaMarca")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TarjetaUltimos4")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("TitularTarjeta")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("IdPago");
+
+                    b.HasIndex("IdPedido")
+                        .IsUnique();
+
+                    b.ToTable("Pagos");
                 });
 
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.Pedido", b =>
@@ -367,7 +624,7 @@ namespace sistema_ventas_quesito_store.Migrations
                         new
                         {
                             IdRol = 2,
-                            NombreRol = "Empleado"
+                            NombreRol = "Empaquetador"
                         },
                         new
                         {
@@ -378,6 +635,221 @@ namespace sistema_ventas_quesito_store.Migrations
                         {
                             IdRol = 4,
                             NombreRol = "Cliente"
+                        });
+                });
+
+            modelBuilder.Entity("sistema_ventas_quesito_store.Models.Talla", b =>
+                {
+                    b.Property<int>("IdTalla")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTalla"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdTalla");
+
+                    b.ToTable("Tallas");
+
+                    b.HasData(
+                        new
+                        {
+                            IdTalla = 1,
+                            Nombre = "Única / Ajustable",
+                            Orden = 1
+                        },
+                        new
+                        {
+                            IdTalla = 2,
+                            Nombre = "S — 54–56 cm",
+                            Orden = 2
+                        },
+                        new
+                        {
+                            IdTalla = 3,
+                            Nombre = "M — 56–58 cm",
+                            Orden = 3
+                        },
+                        new
+                        {
+                            IdTalla = 4,
+                            Nombre = "L — 58–60 cm",
+                            Orden = 4
+                        },
+                        new
+                        {
+                            IdTalla = 5,
+                            Nombre = "XL — 60–62 cm",
+                            Orden = 5
+                        },
+                        new
+                        {
+                            IdTalla = 6,
+                            Nombre = "XXL — 62–64 cm",
+                            Orden = 6
+                        },
+                        new
+                        {
+                            IdTalla = 7,
+                            Nombre = "36",
+                            Orden = 7
+                        },
+                        new
+                        {
+                            IdTalla = 8,
+                            Nombre = "37",
+                            Orden = 8
+                        },
+                        new
+                        {
+                            IdTalla = 9,
+                            Nombre = "38",
+                            Orden = 9
+                        },
+                        new
+                        {
+                            IdTalla = 10,
+                            Nombre = "39",
+                            Orden = 10
+                        },
+                        new
+                        {
+                            IdTalla = 11,
+                            Nombre = "40",
+                            Orden = 11
+                        },
+                        new
+                        {
+                            IdTalla = 12,
+                            Nombre = "41",
+                            Orden = 12
+                        },
+                        new
+                        {
+                            IdTalla = 13,
+                            Nombre = "42",
+                            Orden = 13
+                        },
+                        new
+                        {
+                            IdTalla = 14,
+                            Nombre = "43",
+                            Orden = 14
+                        },
+                        new
+                        {
+                            IdTalla = 15,
+                            Nombre = "44",
+                            Orden = 15
+                        },
+                        new
+                        {
+                            IdTalla = 16,
+                            Nombre = "45",
+                            Orden = 16
+                        },
+                        new
+                        {
+                            IdTalla = 17,
+                            Nombre = "XS",
+                            Orden = 17
+                        },
+                        new
+                        {
+                            IdTalla = 18,
+                            Nombre = "S",
+                            Orden = 18
+                        },
+                        new
+                        {
+                            IdTalla = 19,
+                            Nombre = "M",
+                            Orden = 19
+                        },
+                        new
+                        {
+                            IdTalla = 20,
+                            Nombre = "L",
+                            Orden = 20
+                        },
+                        new
+                        {
+                            IdTalla = 21,
+                            Nombre = "XL",
+                            Orden = 21
+                        },
+                        new
+                        {
+                            IdTalla = 22,
+                            Nombre = "XXL",
+                            Orden = 22
+                        },
+                        new
+                        {
+                            IdTalla = 23,
+                            Nombre = "28",
+                            Orden = 23
+                        },
+                        new
+                        {
+                            IdTalla = 24,
+                            Nombre = "30",
+                            Orden = 24
+                        },
+                        new
+                        {
+                            IdTalla = 25,
+                            Nombre = "32",
+                            Orden = 25
+                        },
+                        new
+                        {
+                            IdTalla = 26,
+                            Nombre = "34",
+                            Orden = 26
+                        },
+                        new
+                        {
+                            IdTalla = 27,
+                            Nombre = "36",
+                            Orden = 27
+                        },
+                        new
+                        {
+                            IdTalla = 28,
+                            Nombre = "38",
+                            Orden = 28
+                        },
+                        new
+                        {
+                            IdTalla = 29,
+                            Nombre = "40",
+                            Orden = 29
+                        },
+                        new
+                        {
+                            IdTalla = 30,
+                            Nombre = "42",
+                            Orden = 30
+                        },
+                        new
+                        {
+                            IdTalla = 31,
+                            Nombre = "44",
+                            Orden = 31
+                        },
+                        new
+                        {
+                            IdTalla = 32,
+                            Nombre = "46",
+                            Orden = 32
                         });
                 });
 
@@ -485,12 +957,12 @@ namespace sistema_ventas_quesito_store.Migrations
                         {
                             IdUsuario = 2,
                             Celular = "999999998",
-                            Contrasena = "empleado123",
-                            Correo = "empleado@quesitostore.com",
+                            Contrasena = "empaquetador123",
+                            Correo = "empaquetador@quesitostore.com",
                             DNI = "00000001",
                             Direccion = "Cajamarca",
                             IdRol = 2,
-                            NombreCompleto = "Empleado"
+                            NombreCompleto = "Empaquetador"
                         },
                         new
                         {
@@ -546,6 +1018,25 @@ namespace sistema_ventas_quesito_store.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("sistema_ventas_quesito_store.Models.CategoriaTalla", b =>
+                {
+                    b.HasOne("sistema_ventas_quesito_store.Models.Categoria", "Categoria")
+                        .WithMany("CategoriaTallas")
+                        .HasForeignKey("IdCategoria")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("sistema_ventas_quesito_store.Models.Talla", "Talla")
+                        .WithMany("CategoriaTallas")
+                        .HasForeignKey("IdTalla")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("Talla");
+                });
+
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.DetallePedido", b =>
                 {
                     b.HasOne("sistema_ventas_quesito_store.Models.Pedido", "Pedido")
@@ -594,6 +1085,17 @@ namespace sistema_ventas_quesito_store.Migrations
                     b.Navigation("Entrega");
                 });
 
+            modelBuilder.Entity("sistema_ventas_quesito_store.Models.Pago", b =>
+                {
+                    b.HasOne("sistema_ventas_quesito_store.Models.Pedido", "Pedido")
+                        .WithOne("Pago")
+                        .HasForeignKey("sistema_ventas_quesito_store.Models.Pago", "IdPedido")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.Pedido", b =>
                 {
                     b.HasOne("sistema_ventas_quesito_store.Models.Usuario", "Cliente")
@@ -618,7 +1120,7 @@ namespace sistema_ventas_quesito_store.Migrations
                     b.HasOne("sistema_ventas_quesito_store.Models.Categoria", "Categoria")
                         .WithMany("Productos")
                         .HasForeignKey("IdCategoria")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Categoria");
@@ -642,6 +1144,8 @@ namespace sistema_ventas_quesito_store.Migrations
 
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.Categoria", b =>
                 {
+                    b.Navigation("CategoriaTallas");
+
                     b.Navigation("Productos");
                 });
 
@@ -655,6 +1159,8 @@ namespace sistema_ventas_quesito_store.Migrations
                     b.Navigation("Detalles");
 
                     b.Navigation("Entrega");
+
+                    b.Navigation("Pago");
                 });
 
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.Producto", b =>
@@ -667,6 +1173,11 @@ namespace sistema_ventas_quesito_store.Migrations
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.Rol", b =>
                 {
                     b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("sistema_ventas_quesito_store.Models.Talla", b =>
+                {
+                    b.Navigation("CategoriaTallas");
                 });
 
             modelBuilder.Entity("sistema_ventas_quesito_store.Models.TipoEntrega", b =>
