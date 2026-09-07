@@ -1,0 +1,84 @@
+@model sistema_ventas_quesito_store.Models.Categoria
+@{ Layout = null; var seleccionadas = new HashSet<int>(); }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nueva Categoría</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/store.css" />
+    <style> body { background: var(--qs-bg); } </style>
+</head>
+<body>
+    <div class="container my-4" style="max-width:680px">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <a asp-action="Index" class="btn btn-qs-outline btn-sm" title="Volver al listado"><i class="bi bi-arrow-left"></i></a>
+            <h5 class="fw-bold mb-0"><i class="bi bi-plus-circle me-2" style="color:var(--qs-dark)"></i>Nueva Categoría</h5>
+        </div>
+        <div class="qs-form-panel">
+            <div class="qs-form-header">
+                <i class="bi bi-tags"></i>
+                <div>
+                    <div class="fw-bold">Datos de la categoría</div>
+                    <div class="text-muted small">Define el nombre y qué tallas maneja</div>
+                </div>
+            </div>
+            <div class="card-body p-3 p-md-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger py-2 small">
+                        @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@e.ErrorMessage</div>
+                        }
+                    </div>
+                }
+                <form asp-action="Crear" method="post">
+                    <p class="qs-form-section"><i class="bi bi-tag"></i>Información general</p>
+                    <div class="row g-3 mb-2">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                            <input asp-for="NombreCategoria" class="form-control" required />
+                            <span asp-validation-for="NombreCategoria" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Descripción</label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <p class="qs-form-section"><i class="bi bi-rulers"></i>Tallas de esta categoría</p>
+                    <div class="mb-2">
+                        <div class="form-text mb-1">Marca las tallas del catálogo que aplican a esta categoría.</div>
+                        <div class="d-flex flex-wrap gap-2 border rounded p-2">
+                            @foreach (var t in (List<sistema_ventas_quesito_store.Models.Talla>)ViewBag.TallasExistentes)
+                            {
+                                <div class="form-check border rounded px-2 py-1">
+                                    <input class="form-check-input" type="checkbox" name="tallasSeleccionadas" value="@t.IdTalla" id="t_@t.IdTalla" @(seleccionadas.Contains(t.IdTalla) ? "checked" : "") />
+                                    <label class="form-check-label" for="t_@t.IdTalla">@t.Nombre</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Tallas nuevas (no están en el catálogo)</label>
+                        <input type="text" name="tallasNuevas" class="form-control" placeholder="Ej: S, M, L, XL (separadas por coma)" />
+                        <div class="form-text">Si escribes tallas que no existen aún, se crearán automáticamente y quedarán disponibles para otras categorías también.</div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <button type="submit" class="btn btn-qs-primary fw-bold"><i class="bi bi-check-circle me-1"></i>Guardar Categoría</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i>Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<footer class="qs-footer">
+  <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
+</footer>
+</body>
+</html>

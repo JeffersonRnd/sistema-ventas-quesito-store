@@ -37,5 +37,6 @@ namespace sistema_ventas_quesito_store.Models
         // Navegación
         public ICollection<DetallePedido> Detalles { get; set; } = new List<DetallePedido>();
         public Entrega? Entrega { get; set; }
+        public Pago? Pago { get; set; }
     }
 }

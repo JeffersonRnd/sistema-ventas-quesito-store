@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/store.css" />
+    <script src="~/js/site.js"></script>
     <style>
             body {
                 background: var(--qs-bg);
@@ -78,8 +79,9 @@
                             <input asp-for="Precio" type="hidden" id="Precio" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <label class="form-label fw-semibold">Stock <span class="text-danger">*</span></label>
-                            <input asp-for="Stock" type="number" min="0" step="1" class="form-control" />
+                            <label class="form-label fw-semibold">Stock total</label>
+                            <input type="text" id="StockDisplay" class="form-control" value="@Model.Stock" readonly disabled />
+                            <div class="form-text">Se calcula automáticamente sumando el stock de cada talla marcada arriba.</div>
                         </div>
                         <div class="col-12">
                             <div class="form-check">
@@ -110,13 +112,9 @@
         </div>
     </div>
     <script>
-            const tallasPorCategoria = {
-                "gorras": ["Única", "S/M", "L/XL"],
-                "zapatillas": ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44"],
-                "polos": ["XS", "S", "M", "L", "XL", "XXL"],
-                "poleras": ["XS", "S", "M", "L", "XL", "XXL"],
-                "pantalones": ["XS", "S", "M", "L", "XL", "XXL"]
-            };
+            // Tallas habilitadas por cada categoría, generadas desde la base de datos
+            // (tabla CategoriaTalla) por el servidor.
+            const tallasPorCategoria = @Html.Raw(ViewBag.TallasPorCategoriaJson ?? "{}");
 
             // Parsea el formato guardado "Nombre:Stock,Nombre:Stock" -> { Nombre: Stock }
             function parseTallaStock(valor) {
@@ -130,11 +128,11 @@
 
             function actualizarTallas(seleccionActual) {
                 const sel = document.getElementById('IdCategoria');
-                const nombre = (sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '').trim().toLowerCase();
+                const idCategoria = sel.value;
                 const cont = document.getElementById('TallasContainer');
                 cont.innerHTML = '';
                 const actuales = parseTallaStock(seleccionActual);
-                (tallasPorCategoria[nombre] || []).forEach(t => {
+                (tallasPorCategoria[idCategoria] || []).forEach(t => {
                     const id = 'talla_' + t.replace(/[^A-Za-z0-9]/g, '');
                     const marcada = Object.prototype.hasOwnProperty.call(actuales, t);
                     const stockVal = marcada ? actuales[t] : 0;
@@ -154,12 +152,16 @@
 
             function actualizarHiddenTalla() {
                 const pares = [];
+                let total = 0;
                 document.querySelectorAll('.talla-check:checked').forEach(chk => {
                     const stockInput = document.querySelector('.talla-stock[data-talla="' + CSS.escape(chk.value) + '"]');
                     const stock = stockInput ? (parseInt(stockInput.value) || 0) : 0;
                     pares.push(chk.value + ':' + stock);
+                    total += stock;
                 });
                 document.getElementById('Talla').value = pares.join(',');
+                const stockDisplay = document.getElementById('StockDisplay');
+                if (stockDisplay) stockDisplay.value = total;
             }
 
             function formatearPrecio(input) {
@@ -171,7 +173,7 @@
 
             function prepararEnvio() {
                 if (document.getElementById('Talla').value === '') {
-                    alert('Selecciona al menos una talla disponible.');
+                    qsToast('Selecciona al menos una talla disponible.', 'error');
                     return false;
                 }
                 document.getElementById('Precio').value = document.getElementById('PrecioDisplay').value.replace(/\s/g, '');

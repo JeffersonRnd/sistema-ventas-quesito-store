@@ -1,8 +1,11 @@
+@model IEnumerable<sistema_ventas_quesito_store.Models.Producto>
+@using sistema_ventas_quesito_store.Models
 @{ Layout = null; var nombre = ViewBag.Nombre as string; }
 <!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Mi Cuenta — Quesito Store</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
 <link rel="stylesheet" href="~/css/store.css"/>
+<script src="~/js/site.js"></script>
 </head><body class="qs-body">
 <header class="qs-header"><div class="qs-topbar">
   <a class="qs-brand" href="#">QUESITO<span>STORE</span></a>
@@ -48,7 +51,131 @@
       <p>Elige tus productos en el catálogo, agrégalos al carrito y confirma tu pedido. Podrás seguir su estado en "Mis Pedidos" hasta que llegue a tus manos.</p>
     </div>
   </div>
+
+  <h2 class="qs-section-title"><i class="bi bi-grid-fill"></i>Catálogo de productos</h2>
+  <div class="qs-grid mb-5">
+    @foreach (var p in Model)
+    {
+        var tallas = TallaHelper.Parse(p.Talla);
+        <div class="qs-card">
+            <div class="qs-card-img" @(!string.IsNullOrEmpty(p.ImagenUrl) ? $"onclick=\"verImagen('{p.ImagenUrl}','{p.Nombre}')\"" : "")>
+                @if (!string.IsNullOrEmpty(p.ImagenUrl))
+                {
+                    <img src="@p.ImagenUrl" alt="@p.Nombre" />
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center h-100 text-muted"><i class="bi bi-image fs-2"></i></div>
+                }
+            </div>
+            <div class="qs-card-body">
+                <span class="qs-cat-tag">@p.Categoria?.NombreCategoria</span>
+                <div class="qs-card-title">@p.Nombre</div>
+                <div class="qs-card-desc">@p.Descripcion</div>
+                <div class="qs-price mb-1">S/ @p.Precio.ToString("0.00")</div>
+                <div class="qs-stock-note">Stock total: @p.Stock</div>
+                <div class="qs-card-footer">
+                    <form class="form-agregar" data-stock="@p.Stock" data-tallas="@(tallas.Count > 0 ? "1" : "0")">
+                        <input type="hidden" name="idProducto" value="@p.IdProducto" />
+                        @if (tallas.Count > 0)
+                        {
+                            <select name="talla" class="form-select form-select-sm mb-1">
+                                <option value="">-- Talla --</option>
+                                @foreach (var t in tallas)
+                                {
+                                    if (t.Stock > 0)
+                                    {
+                                        <option value="@t.Nombre" data-stock="@t.Stock">@t.Nombre (@t.Stock disp.)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@t.Nombre" data-stock="0" class="talla-agotada" disabled>@t.Nombre — Agotado</option>
+                                    }
+                                }
+                            </select>
+                        }
+                        <div class="input-group input-group-sm">
+                            <input type="number" name="cantidad" value="1" min="1" class="form-control" />
+                            <button type="submit" class="btn btn-qs-primary"><i class="bi bi-cart-plus"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+  </div>
+  @if (!Model.Any())
+  {
+      <div class="alert alert-secondary mt-3 mb-5"><i class="bi bi-info-circle me-1"></i>No hay productos disponibles por el momento.</div>
+  }
 </div>
+
+<div class="modal fade" id="modalImagen" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="modalImagenTitulo"></h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="modalImagenSrc" src="" style="max-width:100%;max-height:70vh;" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function verImagen(url, nombre) {
+        document.getElementById('modalImagenSrc').src = url;
+        document.getElementById('modalImagenTitulo').innerText = nombre;
+        new bootstrap.Modal(document.getElementById('modalImagen')).show();
+    }
+
+    document.querySelectorAll('.form-agregar').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var requiereTalla = form.dataset.tallas === '1';
+            var tallaSelect = form.querySelector('select[name=talla]');
+            var talla = tallaSelect ? tallaSelect.value : '';
+
+            if (requiereTalla && !talla) {
+                qsToast('Selecciona una talla antes de agregar al carrito.', 'error');
+                return;
+            }
+
+            var stockMax = requiereTalla
+                ? parseInt(tallaSelect.selectedOptions[0].dataset.stock)
+                : parseInt(form.dataset.stock);
+
+            var cantidadInput = form.querySelector('input[name=cantidad]');
+            var cantidad = parseInt(cantidadInput.value);
+            if (!cantidad || cantidad < 1) {
+                qsToast('La cantidad debe ser al menos 1.', 'error');
+                return;
+            }
+            if (cantidad > stockMax) {
+                qsToast('No puedes comprar más de ' + stockMax + ' unidad(es), es el stock disponible.', 'error');
+                return;
+            }
+            var idProducto = form.querySelector('input[name=idProducto]').value;
+            fetch('@Url.Action("AgregarCarrito", "Pedido")', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'idProducto=' + idProducto + '&cantidad=' + cantidad + '&talla=' + encodeURIComponent(talla)
+            })
+                .then(r => r.json())
+                .then(data => {
+                    qsToast(data.mensaje, data.ok ? 'success' : 'error');
+                    if (data.ok && data.restante <= 0) {
+                        qsToast('Atención: se agotará el stock de esta opción.', 'info');
+                    }
+                })
+                .catch(() => qsToast('Ocurrió un error al agregar el producto.', 'error'));
+        });
+    });
+</script>
 <footer class="qs-footer">
   <div class="container small">&copy; 2026 - <strong>Quesito Store</strong>, Cajamarca</div>
 </footer>

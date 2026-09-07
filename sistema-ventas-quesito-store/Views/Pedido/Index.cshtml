@@ -40,7 +40,13 @@
               @{var sc = p.EstadoPedido switch{"Pendiente"=>"bg-warning text-dark","Aprobado"=>"bg-info text-dark","Empacando"=>"bg-primary","Empacado y listo"=>"bg-success","En despacho"=>"bg-primary","Finalizado"=>"bg-success","Cancelado"=>"bg-danger",_=>"bg-secondary"};}
               <span class="badge @sc">@p.EstadoPedido</span>
             </td>
-            <td data-label="Pago"><span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span></td>
+            <td data-label="Pago">
+              <span class="badge @(p.EstadoPago=="Pagado"?"bg-success":"bg-warning text-dark")">@p.EstadoPago</span>
+              @if (p.Pago != null)
+              {
+                <div class="text-muted small mt-1"><i class="bi bi-credit-card me-1"></i>@p.Pago.TarjetaMarca •••• @p.Pago.TarjetaUltimos4</div>
+              }
+            </td>
             <td data-label="Fecha" class="text-muted small">@p.FechaPedido.ToString("dd/MM/yy HH:mm")</td>
             <td data-label="Acciones" class="pe-3 qs-td-actions">
               @if(p.EstadoPedido=="Pendiente"){
@@ -49,11 +55,6 @@
                 </form>
                 <form asp-action="Cancelar" asp-route-id="@p.IdPedido" method="post" style="display:inline">
                   <button class="btn btn-danger btn-sm" title="Cancelar pedido"><i class="bi bi-x-lg"></i></button>
-                </form>
-              }
-              @if(p.EstadoPago=="Pendiente" && p.EstadoPedido!="Cancelado"){
-                <form asp-action="MarcarPagado" asp-route-id="@p.IdPedido" method="post" style="display:inline">
-                  <button class="btn btn-outline-success btn-sm" title="Marcar pagado"><i class="bi bi-currency-dollar"></i></button>
                 </form>
               }
             </td>

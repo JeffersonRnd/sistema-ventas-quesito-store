@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace sistema_ventas_quesito_store.Migrations
 {
     /// <inheritdoc />
-    public partial class m01 : Migration
+    public partial class m001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,6 +39,20 @@ namespace sistema_ventas_quesito_store.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.IdRol);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tallas",
+                columns: table => new
+                {
+                    IdTalla = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Orden = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tallas", x => x.IdTalla);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,7 +93,7 @@ namespace sistema_ventas_quesito_store.Migrations
                         column: x => x.IdCategoria,
                         principalTable: "Categorias",
                         principalColumn: "IdCategoria",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +118,30 @@ namespace sistema_ventas_quesito_store.Migrations
                         column: x => x.IdRol,
                         principalTable: "Roles",
                         principalColumn: "IdRol",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoriaTallas",
+                columns: table => new
+                {
+                    IdCategoria = table.Column<int>(type: "int", nullable: false),
+                    IdTalla = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoriaTallas", x => new { x.IdCategoria, x.IdTalla });
+                    table.ForeignKey(
+                        name: "FK_CategoriaTallas_Categorias_IdCategoria",
+                        column: x => x.IdCategoria,
+                        principalTable: "Categorias",
+                        principalColumn: "IdCategoria",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoriaTallas_Tallas_IdTalla",
+                        column: x => x.IdTalla,
+                        principalTable: "Tallas",
+                        principalColumn: "IdTalla",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -248,6 +286,32 @@ namespace sistema_ventas_quesito_store.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pagos",
+                columns: table => new
+                {
+                    IdPago = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MetodoPago = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TitularTarjeta = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TarjetaMarca = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TarjetaUltimos4 = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    Monto = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    FechaPago = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EstadoPago = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    IdPedido = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pagos", x => x.IdPago);
+                    table.ForeignKey(
+                        name: "FK_Pagos_Pedidos_IdPedido",
+                        column: x => x.IdPedido,
+                        principalTable: "Pedidos",
+                        principalColumn: "IdPedido",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EstadosEntrega",
                 columns: table => new
                 {
@@ -287,9 +351,48 @@ namespace sistema_ventas_quesito_store.Migrations
                 values: new object[,]
                 {
                     { 1, "Administrador" },
-                    { 2, "Empleado" },
+                    { 2, "Empaquetador" },
                     { 3, "Repartidor" },
                     { 4, "Cliente" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tallas",
+                columns: new[] { "IdTalla", "Nombre", "Orden" },
+                values: new object[,]
+                {
+                    { 1, "Única / Ajustable", 1 },
+                    { 2, "S — 54–56 cm", 2 },
+                    { 3, "M — 56–58 cm", 3 },
+                    { 4, "L — 58–60 cm", 4 },
+                    { 5, "XL — 60–62 cm", 5 },
+                    { 6, "XXL — 62–64 cm", 6 },
+                    { 7, "36", 7 },
+                    { 8, "37", 8 },
+                    { 9, "38", 9 },
+                    { 10, "39", 10 },
+                    { 11, "40", 11 },
+                    { 12, "41", 12 },
+                    { 13, "42", 13 },
+                    { 14, "43", 14 },
+                    { 15, "44", 15 },
+                    { 16, "45", 16 },
+                    { 17, "XS", 17 },
+                    { 18, "S", 18 },
+                    { 19, "M", 19 },
+                    { 20, "L", 20 },
+                    { 21, "XL", 21 },
+                    { 22, "XXL", 22 },
+                    { 23, "28", 23 },
+                    { 24, "30", 24 },
+                    { 25, "32", 25 },
+                    { 26, "34", 26 },
+                    { 27, "36", 27 },
+                    { 28, "38", 28 },
+                    { 29, "40", 29 },
+                    { 30, "42", 30 },
+                    { 31, "44", 31 },
+                    { 32, "46", 32 }
                 });
 
             migrationBuilder.InsertData(
@@ -303,12 +406,57 @@ namespace sistema_ventas_quesito_store.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "CategoriaTallas",
+                columns: new[] { "IdCategoria", "IdTalla" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 1, 4 },
+                    { 1, 5 },
+                    { 1, 6 },
+                    { 2, 7 },
+                    { 2, 8 },
+                    { 2, 9 },
+                    { 2, 10 },
+                    { 2, 11 },
+                    { 2, 12 },
+                    { 2, 13 },
+                    { 2, 14 },
+                    { 2, 15 },
+                    { 2, 16 },
+                    { 3, 17 },
+                    { 3, 18 },
+                    { 3, 19 },
+                    { 3, 20 },
+                    { 3, 21 },
+                    { 3, 22 },
+                    { 4, 17 },
+                    { 4, 18 },
+                    { 4, 19 },
+                    { 4, 20 },
+                    { 4, 21 },
+                    { 4, 22 },
+                    { 5, 23 },
+                    { 5, 24 },
+                    { 5, 25 },
+                    { 5, 26 },
+                    { 5, 27 },
+                    { 5, 28 },
+                    { 5, 29 },
+                    { 5, 30 },
+                    { 5, 31 },
+                    { 5, 32 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "IdUsuario", "Celular", "Contrasena", "Correo", "DNI", "Direccion", "IdRol", "NombreCompleto" },
                 values: new object[,]
                 {
                     { 1, "999999999", "admin123", "admin@quesitostore.com", "00000000", "Cajamarca", 1, "Administrador" },
-                    { 2, "999999998", "empleado123", "empleado@quesitostore.com", "00000001", "Cajamarca", 2, "Empleado" },
+                    { 2, "999999998", "empaquetador123", "empaquetador@quesitostore.com", "00000001", "Cajamarca", 2, "Empaquetador" },
                     { 3, "999999997", "repartidor123", "repartidor@quesitostore.com", "00000002", "Cajamarca", 3, "Repartidor" },
                     { 4, "999999996", "cliente123", "cliente@quesitostore.com", "00000003", "Cajamarca", 4, "Cliente" }
                 });
@@ -328,6 +476,11 @@ namespace sistema_ventas_quesito_store.Migrations
                 table: "Carritos",
                 column: "IdUsuario",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoriaTallas_IdTalla",
+                table: "CategoriaTallas",
+                column: "IdTalla");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DetallesPedido_IdPedido",
@@ -354,6 +507,12 @@ namespace sistema_ventas_quesito_store.Migrations
                 name: "IX_EstadosEntrega_IdEntrega",
                 table: "EstadosEntrega",
                 column: "IdEntrega");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pagos_IdPedido",
+                table: "Pagos",
+                column: "IdPedido",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pedidos_IdCliente",
@@ -383,13 +542,22 @@ namespace sistema_ventas_quesito_store.Migrations
                 name: "CarritoDetalles");
 
             migrationBuilder.DropTable(
+                name: "CategoriaTallas");
+
+            migrationBuilder.DropTable(
                 name: "DetallesPedido");
 
             migrationBuilder.DropTable(
                 name: "EstadosEntrega");
 
             migrationBuilder.DropTable(
+                name: "Pagos");
+
+            migrationBuilder.DropTable(
                 name: "Carritos");
+
+            migrationBuilder.DropTable(
+                name: "Tallas");
 
             migrationBuilder.DropTable(
                 name: "Productos");

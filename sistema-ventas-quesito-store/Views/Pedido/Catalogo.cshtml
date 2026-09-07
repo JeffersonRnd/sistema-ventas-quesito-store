@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/store.css" />
+    <script src="~/js/site.js"></script>
 </head>
 <body class="qs-body">
     <header class="qs-header">
@@ -127,7 +128,7 @@
                     var talla = tallaSelect ? tallaSelect.value : '';
 
                     if (requiereTalla && !talla) {
-                        alert('Selecciona una talla antes de agregar al carrito.');
+                        qsToast('Selecciona una talla antes de agregar al carrito.', 'error');
                         return;
                     }
 
@@ -138,11 +139,11 @@
                     var cantidadInput = form.querySelector('input[name=cantidad]');
                     var cantidad = parseInt(cantidadInput.value);
                     if (!cantidad || cantidad < 1) {
-                        alert('La cantidad debe ser al menos 1.');
+                        qsToast('La cantidad debe ser al menos 1.', 'error');
                         return;
                     }
                     if (cantidad > stockMax) {
-                        alert('No puedes comprar más de ' + stockMax + ' unidad(es), es el stock disponible.');
+                        qsToast('No puedes comprar más de ' + stockMax + ' unidad(es), es el stock disponible.', 'error');
                         return;
                     }
                     var idProducto = form.querySelector('input[name=idProducto]').value;
@@ -153,12 +154,12 @@
                     })
                         .then(r => r.json())
                         .then(data => {
-                            alert(data.mensaje);
+                            qsToast(data.mensaje, data.ok ? 'success' : 'error');
                             if (data.ok && data.restante <= 0) {
-                                alert('Atención: se agotará el stock de esta opción.');
+                                qsToast('Atención: se agotará el stock de esta opción.', 'info');
                             }
                         })
-                        .catch(() => alert('Ocurrió un error al agregar el producto.'));
+                        .catch(() => qsToast('Ocurrió un error al agregar el producto.', 'error'));
                 });
             });
     </script>

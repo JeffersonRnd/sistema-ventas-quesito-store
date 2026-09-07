@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using sistema_ventas_quesito_store.Data;
 using sistema_ventas_quesito_store.Models;
+using System.Text.Json;
 
 namespace sistema_ventas_quesito_store.Controllers
 {
@@ -33,26 +34,37 @@ namespace sistema_ventas_quesito_store.Controllers
         public async Task<IActionResult> Crear()
         {
             var check = VerificarAdmin(); if (check != null) return check;
-            ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria");
+            ViewBag.Categorias = new SelectList(await _db.Categorias.Where(c => c.Activo).ToListAsync(), "IdCategoria", "NombreCategoria");
+            ViewBag.TallasPorCategoriaJson = await ObtenerTallasPorCategoriaJson();
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Crear(Producto p, IFormFile? imagen)
         {
+            var check = VerificarAdmin(); if (check != null) return check;
+
             ModelState.Remove("ImagenUrl");
             ModelState.Remove("Categoria");
             ModelState.Remove("DetallesPedido");
             ModelState.Remove("CarritoDetalles");
+            ModelState.Remove("Stock"); // el stock se calcula en servidor a partir de las tallas, no se confía en el valor enviado por el cliente
 
             if (imagen == null || imagen.Length == 0)
                 ModelState.AddModelError("", "Debes subir una imagen de referencia del producto.");
 
+            var errorTallas = await ValidarTallasDeCategoria(p.IdCategoria, p.Talla);
+            if (errorTallas != null) ModelState.AddModelError("Talla", errorTallas);
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria", p.IdCategoria);
+                ViewBag.Categorias = new SelectList(await _db.Categorias.Where(c => c.Activo).ToListAsync(), "IdCategoria", "NombreCategoria", p.IdCategoria);
+                ViewBag.TallasPorCategoriaJson = await ObtenerTallasPorCategoriaJson();
                 return View(p);
             }
+
+            // El stock general SIEMPRE es la suma de las tallas: nunca se acepta un valor manual desincronizado.
+            p.Stock = TallaHelper.Parse(p.Talla).Sum(t => t.Stock);
 
             p.ImagenUrl = await GuardarImagen(imagen!);
             _db.Productos.Add(p);
@@ -66,20 +78,28 @@ namespace sistema_ventas_quesito_store.Controllers
             var p = await _db.Productos.FindAsync(id);
             if (p == null) return NotFound();
             ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria", p.IdCategoria);
+            ViewBag.TallasPorCategoriaJson = await ObtenerTallasPorCategoriaJson();
             return View(p);
         }
 
         [HttpPost]
         public async Task<IActionResult> Editar(Producto p, IFormFile? imagen)
         {
+            var check = VerificarAdmin(); if (check != null) return check;
+
             ModelState.Remove("ImagenUrl");
             ModelState.Remove("Categoria");
             ModelState.Remove("DetallesPedido");
             ModelState.Remove("CarritoDetalles");
+            ModelState.Remove("Stock");
+
+            var errorTallas = await ValidarTallasDeCategoria(p.IdCategoria, p.Talla);
+            if (errorTallas != null) ModelState.AddModelError("Talla", errorTallas);
 
             if (!ModelState.IsValid)
             {
                 ViewBag.Categorias = new SelectList(await _db.Categorias.ToListAsync(), "IdCategoria", "NombreCategoria", p.IdCategoria);
+                ViewBag.TallasPorCategoriaJson = await ObtenerTallasPorCategoriaJson();
                 return View(p);
             }
 
@@ -91,7 +111,7 @@ namespace sistema_ventas_quesito_store.Controllers
             existente.Talla = p.Talla;
             existente.Color = p.Color;
             existente.Precio = p.Precio;
-            existente.Stock = p.Stock;
+            existente.Stock = TallaHelper.Parse(p.Talla).Sum(t => t.Stock); // recalculado siempre en servidor
             existente.IdCategoria = p.IdCategoria;
             existente.Activo = p.Activo;
 
@@ -100,6 +120,43 @@ namespace sistema_ventas_quesito_store.Controllers
 
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // Construye { "1": ["Única","S — 54–56 cm", ...], "2": ["36","37",...], ... } por IdCategoria
+        // para que la vista pinte los checkboxes de talla dinámicamente, sin nada hardcodeado en JS.
+        private async Task<string> ObtenerTallasPorCategoriaJson()
+        {
+            var datos = await _db.CategoriaTallas
+                .Include(ct => ct.Talla)
+                .ToListAsync();
+
+            var mapa = datos
+                .GroupBy(ct => ct.IdCategoria)
+                .ToDictionary(
+                    g => g.Key.ToString(),
+                    g => g.OrderBy(ct => ct.Talla!.Orden).Select(ct => ct.Talla!.Nombre).ToList());
+
+            return JsonSerializer.Serialize(mapa);
+        }
+
+        // Verifica que las tallas enviadas realmente pertenezcan a la categoría elegida
+        // (evita que, vía manipulación del form, se guarden tallas de otra categoría).
+        private async Task<string?> ValidarTallasDeCategoria(int idCategoria, string? tallaSerializada)
+        {
+            var enviadas = TallaHelper.Parse(tallaSerializada);
+            if (enviadas.Count == 0) return "Selecciona al menos una talla disponible.";
+
+            var validas = await _db.CategoriaTallas
+                .Where(ct => ct.IdCategoria == idCategoria)
+                .Include(ct => ct.Talla)
+                .Select(ct => ct.Talla!.Nombre)
+                .ToListAsync();
+
+            var invalidas = enviadas.Select(t => t.Nombre).Except(validas).ToList();
+            if (invalidas.Count > 0)
+                return $"Las siguientes tallas no pertenecen a la categoría seleccionada: {string.Join(", ", invalidas)}";
+
+            return null;
         }
 
         [HttpPost]
@@ -123,6 +180,7 @@ namespace sistema_ventas_quesito_store.Controllers
         [HttpPost]
         public async Task<IActionResult> Desactivar(int id)
         {
+            var check = VerificarAdmin(); if (check != null) return check;
             var p = await _db.Productos.FindAsync(id);
             if (p != null) { p.Activo = !p.Activo; await _db.SaveChangesAsync(); }
             return RedirectToAction(nameof(Index));

@@ -41,6 +41,10 @@
                         @if (p.EstadoPedido != "Cancelado")
                         {
                             <text> &nbsp;|&nbsp; Pago: <span class="badge @(p.EstadoPago == "Pagado" ? "bg-success" : "bg-warning text-dark")">@p.EstadoPago</span></text>
+                            @if (p.Pago != null)
+                            {
+                                <span class="text-muted small"> (@p.Pago.TarjetaMarca •••• @p.Pago.TarjetaUltimos4)</span>
+                            }
                         }
                     </p>
                     <p class="mb-2">Total: <span class="qs-price">S/ @p.Total.ToString("0.00")</span></p>

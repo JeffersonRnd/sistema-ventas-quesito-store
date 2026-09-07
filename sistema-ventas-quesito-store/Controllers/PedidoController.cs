@@ -146,9 +146,10 @@ namespace sistema_ventas_quesito_store.Controllers
             return View(carrito);
         }
 
-        // ── CLIENTE: confirmar pedido ────────────────────────────
+        // ── CLIENTE: confirmar pedido (el pago con tarjeta se simula aquí mismo) ──
         [HttpPost]
-        public async Task<IActionResult> ConfirmarPedido(int idTipoEntrega, string? direccionDestino)
+        public async Task<IActionResult> ConfirmarPedido(int idTipoEntrega, string? direccionDestino,
+            string? titularTarjeta, string? numeroTarjeta, string? vencimientoTarjeta, string? cvvTarjeta)
         {
             if (GetRol() != "Cliente") return RedirectToAction("Index", "Login");
             if (idTipoEntrega <= 0)
@@ -161,17 +162,33 @@ namespace sistema_ventas_quesito_store.Controllers
                 TempData["ErrorPedido"] = "Por favor ingrese la dirección de entrega.";
                 return RedirectToAction(nameof(Carrito));
             }
+
+            // ── Validación de la tarjeta (simulada) ──
+            // Solo se valida el formato; el número completo y el CVV nunca se guardan.
+            var numeroLimpio = (numeroTarjeta ?? "").Replace(" ", "").Trim();
+            if (string.IsNullOrWhiteSpace(titularTarjeta) ||
+                numeroLimpio.Length < 13 || numeroLimpio.Length > 19 || !numeroLimpio.All(char.IsDigit) ||
+                string.IsNullOrWhiteSpace(vencimientoTarjeta) ||
+                string.IsNullOrWhiteSpace(cvvTarjeta) || cvvTarjeta.Trim().Length < 3 || cvvTarjeta.Trim().Length > 4 || !cvvTarjeta.Trim().All(char.IsDigit))
+            {
+                TempData["ErrorPedido"] = "Revisa los datos de tu tarjeta: hay campos incompletos o inválidos.";
+                return RedirectToAction(nameof(Carrito));
+            }
+
             var idUsuario = GetUserId();
             var carrito = await _db.Carritos
                 .Include(c => c.Detalles).ThenInclude(d => d.Producto)
                 .FirstOrDefaultAsync(c => c.IdUsuario == idUsuario);
             if (carrito == null || !carrito.Detalles.Any()) return RedirectToAction(nameof(Carrito));
 
+            var total = carrito.Detalles.Sum(d => d.Producto!.Precio * d.Cantidad);
+
             var pedido = new Pedido
             {
                 IdCliente = idUsuario,
                 IdTipoEntrega = idTipoEntrega,
-                Total = carrito.Detalles.Sum(d => d.Producto!.Precio * d.Cantidad)
+                Total = total,
+                EstadoPago = "Pagado" // el pago simulado ya se validó arriba
             };
             _db.Pedidos.Add(pedido);
             await _db.SaveChangesAsync();
@@ -208,6 +225,20 @@ namespace sistema_ventas_quesito_store.Controllers
             var entrega = new Entrega { IdPedido = pedido.IdPedido, DireccionDestino = direccionDestino };
             _db.Entregas.Add(entrega);
 
+            // Registrar el pago simulado (nunca se guarda el número completo ni el CVV)
+            var marca = numeroLimpio.StartsWith("4") ? "Visa"
+                : (numeroLimpio.StartsWith("5") ? "Mastercard" : "Tarjeta");
+            _db.Pagos.Add(new Pago
+            {
+                IdPedido = pedido.IdPedido,
+                MetodoPago = "Tarjeta",
+                TitularTarjeta = titularTarjeta!.Trim(),
+                TarjetaMarca = marca,
+                TarjetaUltimos4 = numeroLimpio[^4..],
+                Monto = total,
+                EstadoPago = "Aprobado"
+            });
+
             // Limpiar carrito
             _db.CarritoDetalles.RemoveRange(carrito.Detalles);
             await _db.SaveChangesAsync();
@@ -220,6 +251,7 @@ namespace sistema_ventas_quesito_store.Controllers
             if (GetRol() != "Cliente") return RedirectToAction("Index", "Login");
             var pedidos = await _db.Pedidos
                 .Include(p => p.TipoEntrega)
+                .Include(p => p.Pago)
                 .Include(p => p.Entrega).ThenInclude(e => e!.EstadosEntrega)
                 .Where(p => p.IdCliente == GetUserId())
                 .OrderByDescending(p => p.FechaPedido).ToListAsync();
@@ -233,6 +265,7 @@ namespace sistema_ventas_quesito_store.Controllers
             var pedidos = await _db.Pedidos
                 .Include(p => p.Cliente)
                 .Include(p => p.TipoEntrega)
+                .Include(p => p.Pago)
                 .OrderByDescending(p => p.FechaPedido).ToListAsync();
             return View(pedidos);
         }
@@ -244,15 +277,6 @@ namespace sistema_ventas_quesito_store.Controllers
             if (GetRol() != "Administrador") return RedirectToAction("Index", "Login");
             var p = await _db.Pedidos.FindAsync(id);
             if (p != null) { p.EstadoPedido = "Aprobado"; await _db.SaveChangesAsync(); }
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MarcarPagado(int id)
-        {
-            if (GetRol() != "Administrador") return RedirectToAction("Index", "Login");
-            var p = await _db.Pedidos.FindAsync(id);
-            if (p != null) { p.EstadoPago = "Pagado"; await _db.SaveChangesAsync(); }
             return RedirectToAction(nameof(Index));
         }
 
